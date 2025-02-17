@@ -1,59 +1,26 @@
-# CasoDeEstudio1Frontend
+<h1 align="center">
+  Sistema de Gestión de Matriculas 🏫📖
+</h1>
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.1.4.
+> [!IMPORTANT]
+> **📋 Descripción**
+> 
+> El Sistema de Gestión de Matriculas es una aplicación web diseñada para facilitar la administración de matriculas en una institución educativa. Este sistema permite gestionar de manera eficiente la información de los estudiantes, las materias y las matriculas.
 
-## Development server
+![Login](/screenshots/login.png)
 
-To start a local development server, run:
+### ✨ Funcionalidades Principales 
 
-```bash
-ng serve
-```
+- **Gestión de Estudiantes**: Permite realizar operaciones CRUD (Crear, Leer, Actualizar y Eliminar) sobre la información de los estudiantes.
+- **Gestión de Materias**: Permite realizar operaciones CRUD sobre la información de las materias.
+- **Gestión de Matriculas**: Permite realizar operaciones CRUD sobre la información de las matriculas.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+### 📊 Dashboards
 
-## Code scaffolding
+El sistema incluye tres dashboards principales para la gestión de:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+1. **Estudiantes**: Un dashboard para administrar la información de los estudiantes.
+2. **Materias**: Un dashboard para administrar la información de las materias.
+3. **Matriculas**: Un dashboard para administrar la información de las matriculas.
 
-```bash
-ng generate component component-name
-```
-
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
-
-```bash
-ng generate --help
-```
-
-## Building
-
-To build the project run:
-
-```bash
-ng build
-```
-
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
-
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Estos dashboards proporcionan una interfaz intuitiva y fácil de usar para realizar todas las operaciones necesarias de gestión.

@@ -1,0 +1,6 @@
+{
+  "symbols.files.associations": {
+    "*.page.ts": "angular-module",
+    "*.layout.ts": "angular"
+  }
+}
