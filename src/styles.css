@@ -1,7 +1,32 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
-@import "tailwindcss";
+@import 'tailwindcss';
 
-/* indigo: #615fff */
+@keyframes slideInBottom {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutTop {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  to {
+    transform: translateY(-20px);
+    opacity: 0;
+  }
+}
+
 @theme {
   --font-inter: 'Inter', serif;
+  --animate-slide-in-bottom: slideInBottom 0.7s ease;
+  --animate-slide-out-top: slideOutTop 0.7s ease;
 }
