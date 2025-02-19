@@ -36,8 +36,8 @@ import { Component, input, model } from '@angular/core';
 })
 export class ToastComponent {
   public message = model.required<string>();
-  public readonly type = input<'success' | 'error'>();
-  public readonly success: boolean = this.type() === 'success';
+  public readonly type = input<'success' | 'error'>('success');
+  public success: boolean = true;
   public closedAnimate: boolean = false;
 
   public closeToast(): void {
@@ -46,5 +46,9 @@ export class ToastComponent {
       this.message.update(() => '');
       this.closedAnimate = false;
     }, 500);
+  }
+
+  public ngOnInit(): void {
+    this.success = this.type() === 'success';
   }
 }

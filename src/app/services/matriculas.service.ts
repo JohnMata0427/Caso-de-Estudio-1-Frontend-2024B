@@ -2,58 +2,58 @@ import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, tap } from 'rxjs';
-import { Materia } from '../interfaces/materias.interface';
+import { Matricula } from '../interfaces/matricula.interface';
 
 @Injectable({
   providedIn: 'root',
 })
-export class MateriasService {
-  private backendUrl: string = environment.backendUrl + '/materias';
+export class MatriculasService {
+  private backendUrl: string = environment.backendUrl + '/matriculas';
   private http: HttpClient = inject(HttpClient);
-  private materias: Materia[] = [];
+  private matriculas: Matricula[] = [];
 
-  public getAll(): Observable<Materia[]> {
-    if (this.materias.length) {
-      return of(this.materias);
+  public getAll(): Observable<Matricula[]> {
+    if (this.matriculas.length) {
+      return of(this.matriculas);
     }
 
-    return this.http.get<Materia[]>(this.backendUrl, {
+    return this.http.get<Matricula[]>(this.backendUrl, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     }).pipe(
-      tap((materias) => this.materias = materias)
-    );
+      tap((matriculas) => this.matriculas = matriculas)
+    )
   }
 
-  public getById(id: number): Observable<Materia> {
-    return this.http.get<Materia>(`${this.backendUrl}/${id}`, {
+  public getById(id: number): Observable<Matricula> {
+    return this.http.get<Matricula>(`${this.backendUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
   }
 
-  public createMateria(materia: Materia): Observable<Materia> {
-    return this.http.post<Materia>(this.backendUrl, materia, {
+  public createMatricula(materia: Matricula): Observable<Matricula> {
+    return this.http.post<Matricula>(this.backendUrl, materia, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
   }
 
-  public updateMateria(
+  public updateMatricula(
     id: number,
-    materia: Partial<Materia>,
-  ): Observable<Materia> {
-    return this.http.put<Materia>(`${this.backendUrl}/${id}`, materia, {
+    materia: Partial<Matricula>,
+  ): Observable<Matricula> {
+    return this.http.put<Matricula>(`${this.backendUrl}/${id}`, materia, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
   }
 
-  public deleteMateria(id: number): Observable<void> {
+  public deleteMatricula(id: number): Observable<void> {
     return this.http.delete<void>(`${this.backendUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,

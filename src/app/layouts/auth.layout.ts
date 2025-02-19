@@ -10,7 +10,7 @@ import { Component } from '@angular/core';
         class="rounded-lg h-full object-cover sm:w-1/2"
       />
       <div
-        class="grid place-items-center sm:w-1/2 sm:h-full sm:relative absolute bg-white dark:bg-stone-900 rounded-lg m-4 inset-y-0"
+        class="grid place-items-center sm:w-1/2 sm:h-full sm:relative absolute bg-stone-100 dark:bg-stone-900 rounded-lg m-4 inset-y-0"
       >
         <ng-content />
       </div>

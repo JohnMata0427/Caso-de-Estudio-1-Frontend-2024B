@@ -11,9 +11,16 @@ import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { ToastComponent } from '../../components/toast.component';
+import { ButtonComponent } from '../../components/button.component';
 
 @Component({
-  imports: [AuthLayout, ReactiveFormsModule, NgOptimizedImage, ToastComponent],
+  imports: [
+    AuthLayout,
+    ReactiveFormsModule,
+    NgOptimizedImage,
+    ToastComponent,
+    ButtonComponent,
+  ],
   template: `
     <auth-layout>
       <form
@@ -102,8 +109,8 @@ import { ToastComponent } from '../../components/toast.component';
             }
           </svg>
         </div>
-        <button
-          class="px-4 py-2 bg-indigo-500 text-white rounded-lg hover:bg-indigo-600 transition-colors cursor-pointer font-semibold disabled:bg-indigo-100 active:bg-indigo-700 duration-300 flex items-center justify-center gap-x-2 dark:disabled:bg-indigo-950 disabled:cursor-wait"
+        <button-component
+          moreStyles="px-4 py-2 flex justify-center items-center gap-x-2 w-full"
           [disabled]="this.loading"
         >
           @if (!loading) {
@@ -111,7 +118,7 @@ import { ToastComponent } from '../../components/toast.component';
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
-              class="fill-white size-6"
+              class="fill-stone-100 size-6"
             >
               <path
                 d="M193-212q-18 7-33-3t-16-30v-139l288-96-288-96v-139q0-19 16-29t33-4l587 235q23 9 23 33t-23 33L193-212Z"
@@ -128,7 +135,7 @@ import { ToastComponent } from '../../components/toast.component';
               />
             </svg>
           }
-        </button>
+        </button-component>
       </form>
     </auth-layout>
     <toast-component type="error" [(message)]="message" />

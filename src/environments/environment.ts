@@ -1,4 +1,3 @@
 export const environment = {
-  production: false,
-  backendUrl: 'http://localhost:8080/api/v1',
+  backendUrl: 'https://angry-caitrin-jhonmata0427s-projects-e45e6268.koyeb.app/api/v1',
 };

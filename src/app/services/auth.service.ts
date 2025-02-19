@@ -1,13 +1,13 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { Observable, tap } from 'rxjs';
+import { Observable, of, tap } from 'rxjs';
 import { Usuario } from '../interfaces/usuario.interface';
 
 interface Response {
   token: string;
   response: string;
-  usuario: Omit<Usuario, 'password' | 'id'>;
+  usuario: Partial<Omit<Usuario, 'password' | 'id'>>;
 }
 
 @Injectable({
@@ -15,6 +15,7 @@ interface Response {
 })
 export class AuthService {
   private backendUrl: string = environment.backendUrl;
+  public usuario: Partial<Usuario> | null = null;
   private http: HttpClient = inject(HttpClient);
 
   public login(
@@ -30,14 +31,17 @@ export class AuthService {
   }
 
   public profile(): Observable<Omit<Response, 'token'>> {
-    return this.http.get<Omit<Response, 'token'>>(
-      `${this.backendUrl}/auth/profile`,
-      {
+    if (this.usuario) {
+      return of({ response: 'success', usuario: this.usuario });
+    }
+
+    return this.http
+      .get<Omit<Response, 'token'>>(`${this.backendUrl}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-      },
-    );
+      })
+      .pipe(tap(({ usuario }) => (this.usuario = usuario)));
   }
 
   public get isAuthenticated(): boolean {

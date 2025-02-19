@@ -4,6 +4,7 @@ import { MateriasAdminPage } from './pages/admin/materias.page';
 import { AuthGuard, NoAuthGuard } from './guards/auth.guard';
 import { EstudiantesAdminPage } from './pages/admin/estudiantes.page';
 import { MatriculasAdminPage } from './pages/admin/matriculas.page';
+import { AdminLayout } from './layouts/admin.layout';
 
 export const routes: Routes = [
   {

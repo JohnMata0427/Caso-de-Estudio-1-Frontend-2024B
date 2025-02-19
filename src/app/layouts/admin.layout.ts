@@ -1,9 +1,4 @@
-import {
-  CommonModule,
-  NgClass,
-  NgOptimizedImage,
-  TitleCasePipe,
-} from '@angular/common';
+import { NgClass, NgOptimizedImage, TitleCasePipe } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth.service';
@@ -12,111 +7,133 @@ import { Title } from '@angular/platform-browser';
 
 @Component({
   selector: 'admin-layout',
-  imports: [RouterLink, NgClass, CommonModule, NgOptimizedImage],
+  imports: [RouterLink, NgClass, NgOptimizedImage, TitleCasePipe],
   template: `
-    <header
-      class="py-2 px-6 border-b border-stone-300 flex justify-between items-center"
-    >
-      <div class="flex gap-x-2">
-        <img
-          ngSrc="icono.png"
-          alt="Icono de la aplicación"
-          class="object-contain"
-          width="24"
-          height="24"
-        />
-        <h1 class="font-semibold">
-          Sistema de Gestión de Matriculas Académicas
-        </h1>
-      </div>
-      <button
-        class="py-1 px-3 text-xs bg-red-500 text-white hover:bg-red-600 active:bg-red-700 cursor-pointer flex justify-center gap-x-2 rounded-lg items-center"
-        (click)="logout()"
+    <div class="min-h-screen flex flex-col">
+      <header
+        class="py-2 px-6 border-b border-stone-300 dark:border-stone-800 flex justify-between items-center"
       >
-        Cerrar sesión
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          class="size-5 fill-white"
-          viewBox="0 -960 960 960"
-        >
-          <path
-            d="M216-144q-30 0-51-21t-21-51v-528q0-30 21-51t51-21h264v72H216v528h264v72H216Zm432-168-51-51 81-81H384v-72h294l-81-81 51-51 168 168-168 168Z"
+        <div class="flex gap-x-2">
+          <img
+            ngSrc="icono.png"
+            alt="Icono de la aplicación"
+            class="object-contain"
+            width="24"
+            height="24"
           />
-        </svg>
-      </button>
-    </header>
-    <main class="flex">
-      <nav class="px-6 py-2 border-r border-stone-300">
-        <h2 class="text-sm font-bold">Bienvenido</h2>
-        <article
-          class="flex flex-col items-center justify-center my-5 h-22 w-40"
-          [ngClass]="{ 'animate-pulse': loading }"
+          <h1 class="font-semibold">
+            Sistema de Gestión de Matriculas
+          </h1>
+        </div>
+        <button
+          class="bg-red-500 hover:bg-red-600 active:bg-red-700 border-red-600 hover:border-red-700 active:border-red-800 text-stone-100 rounded-lg transition-colors cursor-pointer font-semibold border-b-3 py-1 px-3 text-xs flex items-center gap-x-2"
+          (click)="logout()"
         >
-          @if (loading) {
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="fill-indigo-500 size-5 animate-spin opacity-90"
-              viewBox="0 -960 960 960"
-            >
-              <path
-                d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480q0-87 33-163t89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17q25 0 42 17t17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33Z"
-              />
-            </svg>
-            <p class="text-xs font-medium datos mt-1">Cargando...</p>
-          } @else {
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              class="size-8 mx-auto fill-stone-700"
-              viewBox="0 -960 960 960"
-            >
-              <path
-                d="M480-408q60 0 102-42t42-102q0-60-42-102t-102-42q-60 0-102 42t-42 102q0 60 42 102t102 42Zm0 237q58-18 104-57t80-91q-43-20-89-30t-95-11q-48 0-94 11t-90 30q34 51 80 91t104 57Zm0 71h-12q-6 0-11-3-131-43-210-159t-79-253v-180q0-23 13-41t33-26l240-92q13-5 26-5t26 5l240 92q21 8 34 26t12 41v180q0 137-79 253T503-103l-11 3h-12Z"
-              />
-            </svg>
-            <strong class="text-sm font-medium">
-              {{ user?.nombre }} {{ user?.apellido }}
-            </strong>
-            <small class="text-[10px]">{{ user?.email }}</small>
-            <p class="text-xs mt-1 text-stone-700">
-              <span class="text-green-500">•</span>
-              En linea
-            </p>
-          }
-        </article>
-        <h2 class="text-sm font-bold my-1">Dashboard</h2>
-        <ul class="flex flex-col gap-y-1 text-sm">
-          @for (route of routes; track $index) {
-            @let condition = activedUrl === route.path;
-            <li>
-              <a
-                class="flex gap-x-2 py-1 pl-2 pr-6 rounded-lg transition-colors duration-300 hover:bg-indigo-100 hover:text-indigo-500 group active:bg-indigo-200 font-medium items-center"
-                routerLink="/admin/{{ route.path }}"
-                [ngClass]="{
-                  'bg-indigo-200 text-indigo-500': condition,
-                  'text-stone-700': !condition,
-                }"
+          Salir
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-5 fill-stone-100"
+            viewBox="0 -960 960 960"
+          >
+            <path
+              d="M216-144q-30 0-51-21t-21-51v-528q0-30 21-51t51-21h264v72H216v528h264v72H216Zm432-168-51-51 81-81H384v-72h294l-81-81 51-51 168 168-168 168Z"
+            />
+          </svg>
+        </button>
+      </header>
+      <main class="flex flex-1">
+        <nav class="px-6 py-2 border-r border-stone-300 dark:border-stone-800 hidden sm:block">
+          <h3 class="text-sm font-bold">Bienvenido</h3>
+          <article
+            class="flex flex-col items-center justify-center my-5 h-22 w-40"
+            [ngClass]="{ 'animate-pulse': loading }"
+          >
+            @if (loading) {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="fill-indigo-500 size-5 animate-spin opacity-90"
+                viewBox="0 -960 960 960"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  class="size-5 group-hover:fill-indigo-500 transition-colors duration-300"
-                  viewBox="0 -960 960 960"
+                <path
+                  d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480q0-87 33-163t89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17q25 0 42 17t17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33Z"
+                />
+              </svg>
+              <p class="text-xs font-medium datos mt-1">Cargando...</p>
+            } @else {
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                class="size-8 mx-auto fill-stone-800 dark:fill-stone-100"
+                viewBox="0 -960 960 960"
+              >
+                <path
+                  d="M480-408q60 0 102-42t42-102q0-60-42-102t-102-42q-60 0-102 42t-42 102q0 60 42 102t102 42Zm0 237q58-18 104-57t80-91q-43-20-89-30t-95-11q-48 0-94 11t-90 30q34 51 80 91t104 57Zm0 71h-12q-6 0-11-3-131-43-210-159t-79-253v-180q0-23 13-41t33-26l240-92q13-5 26-5t26 5l240 92q21 8 34 26t12 41v180q0 137-79 253T503-103l-11 3h-12Z"
+                />
+              </svg>
+              <strong class="text-sm font-medium">
+                {{ user.nombre }} {{ user.apellido }}
+              </strong>
+              <small class="text-[10px] text-stone-700 dark:text-stone-300">
+                {{ user.email }}
+              </small>
+              <p class="text-xs mt-1">
+                <span class="text-green-500">•</span>
+                En linea
+              </p>
+            }
+          </article>
+          <h3 class="text-sm font-bold my-1">Dashboard</h3>
+          <ul class="flex flex-col gap-y-1 text-sm">
+            @for (route of routes; track $index) {
+              @let condition = activedUrl === route.path;
+              <li>
+                <a
+                  class="flex gap-x-2 py-1 pl-2 pr-6 rounded-lg transition-colors duration-300 hover:bg-indigo-100 hover:text-indigo-500 group active:bg-indigo-200 font-medium items-center dark:hover:bg-indigo-800 dark:hover:text-indigo-500 dark:active:bg-indigo-900 dark:active:text-indigo-500"
+                  routerLink="/admin/{{ route.path }}"
                   [ngClass]="{
-                    'fill-indigo-500': condition,
-                    'fill-stone-700': !condition,
+                    'bg-indigo-200 text-indigo-500 dark:bg-indigo-900':
+                      condition,
+                    'text-stone-700 dark:text-stone-200': !condition,
                   }"
                 >
-                  <path [attr.d]="route.icon" />
-                </svg>
-                {{ route.path | titlecase }}
-              </a>
-            </li>
-          }
-        </ul>
-      </nav>
-      <section class="flex-1">
-        <ng-content />
-      </section>
-    </main>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    class="size-5 group-hover:fill-indigo-500 transition-colors duration-300"
+                    viewBox="0 -960 960 960"
+                    [ngClass]="{
+                      'fill-indigo-500': condition,
+                      'fill-stone-700 dark:fill-stone-200': !condition,
+                    }"
+                  >
+                    <path [attr.d]="route.icon" />
+                  </svg>
+                  {{ route.path | titlecase }}
+                </a>
+              </li>
+            }
+          </ul>
+        </nav>
+        <section class="flex-1 py-2 px-6">
+          <aside class="flex gap-x-2 items-center">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="size-7 fill-stone-700 dark:fill-stone-100"
+              viewBox="0 -960 960 960"
+            >
+              <path
+                d="M264-264h192v-120H264v120Zm0-168h192v-264H264v264Zm240 168h192v-264H504v264Zm0-312h192v-120H504v120ZM216-144q-29 0-50-21t-22-51v-528q0-30 22-51 21-21 50-21h528q29 0 51 21t21 51v72h96v72h-96v84h96v72h-96v84h96v72h-96v72q0 29-21 51t-51 21H216Zm0-72h528v-528H216v528Zm0-528v528-528Z"
+              />
+            </svg>
+            <ul class="flex gap-x-1 text-sm items-center font-medium">
+              <li><span>Admin ></span></li>
+              <li>
+                <span>{{ activedUrl | titlecase }}</span>
+              </li>
+            </ul>
+          </aside>
+          <ng-content />
+        </section>
+      </main>
+    </div>
   `,
 })
 export class AdminLayout {
@@ -147,7 +164,6 @@ export class AdminLayout {
       `${new TitleCasePipe().transform(this.activedUrl)} Dashboard • Sistema de Gestión de Matriculas`,
     );
 
-    this.loading = true;
     this.authService
       .profile()
       .subscribe({
