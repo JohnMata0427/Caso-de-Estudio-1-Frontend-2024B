@@ -2,8 +2,7 @@
   Sistema de Gestión de Matriculas 🏫📖
 </h1>
 
-> [!IMPORTANT]
-> **📋 Descripción**
+> [!IMPORTANT] > **📋 Descripción**
 >
 > El Sistema de Gestión de Matriculas es una aplicación web diseñada para facilitar la administración de matriculas en una institución educativa. Este sistema permite gestionar de manera eficiente la información de los estudiantes, las materias y las matriculas.
 

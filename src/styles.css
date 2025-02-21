@@ -1,32 +1,31 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
 @import 'tailwindcss';
 
-@keyframes slideInBottom {
-  from {
-    transform: translateY(20px);
-    opacity: 0;
-  }
+@custom-variant dark (&:where(.dark, .dark *));
 
+@keyframes slideInRight {
+  from {
+    transform: translateX(-100%);
+  }
   to {
-    transform: translateY(0);
-    opacity: 1;
+    transform: translateX(0);
   }
 }
 
-@keyframes slideOutTop {
+@keyframes slideOutLeft {
   from {
-    transform: translateY(0);
-    opacity: 1;
+    transform: translateX(0);
+    position: fixed;
   }
-
   to {
-    transform: translateY(-20px);
-    opacity: 0;
+    transform: translateX(-100%);
+    position: fixed;
+    display: none;
   }
 }
 
 @theme {
   --font-inter: 'Inter', serif;
-  --animate-slide-in-bottom: slideInBottom 0.7s ease;
-  --animate-slide-out-top: slideOutTop 0.7s ease;
+  --animate-slide-out-left: slideOutLeft 0.7s forwards;
+  --animate-slide-in-right: slideInRight 0.7s forwards;
 }

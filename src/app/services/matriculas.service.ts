@@ -17,13 +17,13 @@ export class MatriculasService {
       return of(this.matriculas);
     }
 
-    return this.http.get<Matricula[]>(this.backendUrl, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    }).pipe(
-      tap((matriculas) => this.matriculas = matriculas)
-    )
+    return this.http
+      .get<Matricula[]>(this.backendUrl, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .pipe(tap((matriculas) => (this.matriculas = matriculas)));
   }
 
   public getById(id: number): Observable<Matricula> {
@@ -34,30 +34,46 @@ export class MatriculasService {
     });
   }
 
-  public createMatricula(materia: Matricula): Observable<Matricula> {
-    return this.http.post<Matricula>(this.backendUrl, materia, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
+  public create(materia: Matricula): Observable<Matricula> {
+    return this.http
+      .post<Matricula>(this.backendUrl, materia, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .pipe(tap((newMatricula) => this.matriculas.push(newMatricula)));
   }
 
-  public updateMatricula(
+  public update(
     id: number,
     materia: Partial<Matricula>,
   ): Observable<Matricula> {
-    return this.http.put<Matricula>(`${this.backendUrl}/${id}`, materia, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
+    return this.http
+      .put<Matricula>(`${this.backendUrl}/${id}`, materia, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .pipe(
+        tap((matricula) => {
+          const index = this.matriculas.findIndex((m) => m.id === id);
+          this.matriculas[index] = matricula;
+        }),
+      );
   }
 
-  public deleteMatricula(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.backendUrl}/${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
+  public delete(id: number): Observable<void> {
+    return this.http
+      .delete<void>(`${this.backendUrl}/${id}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .pipe(
+        tap(() => {
+          const index = this.matriculas.findIndex((m) => m.id === id);
+          this.matriculas.splice(index, 1);
+        }),
+      );
   }
 }

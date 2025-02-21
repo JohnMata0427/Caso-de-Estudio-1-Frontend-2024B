@@ -5,13 +5,14 @@ import { FormularioComponent } from '../../components/formulario.component';
 import { TableComponent } from '../../components/table.component';
 import { Matricula } from '../../interfaces/matricula.interface';
 import { MatriculasService } from '../../services/matriculas.service';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'matriculas-admin-page',
   imports: [AdminLayout, ButtonComponent, FormularioComponent, TableComponent],
   template: `
-    <admin-layout>
-      <div class="flex flex-col gap-y-3 mt-4">
+    <admin-layout class="flex flex-col min-h-screen">
+      <div class="flex flex-col gap-y-4 mt-2">
         <div>
           <button-component
             moreStyles="py-1 px-2 text-sm flex gap-x-1"
@@ -26,30 +27,34 @@ import { MatriculasService } from '../../services/matriculas.service';
                 d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72v-204Z"
               />
             </svg>
-            Crear Materia
+            Crear matricula
           </button-component>
-          @if (matricula) {
-            <formulario-component
-              title="materia"
-              [data]="matricula"
-              [(opened)]="openForm"
-            />
-          }
+          <formulario-component
+            title="matriculas"
+            [form]="form"
+            [service]="matriculasService"
+            [(opened)]="openForm"
+          />
         </div>
-        <table-component [data]="matriculas" />
+        <table-component [data]="matriculas" [loading]="loading" />
       </div>
     </admin-layout>
   `,
 })
 export class MatriculasAdminPage {
-  private materiasService: MatriculasService = inject(MatriculasService);
+  protected matriculasService: MatriculasService = inject(MatriculasService);
   public loading: boolean = true;
   public openForm: boolean = false;
   public matriculas: Matricula[] = [];
-  public matricula!: Matricula;
+  public form = new FormGroup({
+    codigo: new FormControl('', Validators.required),
+    descripcion: new FormControl('', Validators.required),
+    id_estudiante: new FormControl(1, Validators.required),
+    id_materia: new FormControl(1, Validators.required),
+  });
 
   public ngOnInit(): void {
-    this.materiasService
+    this.matriculasService
       .getAll()
       .subscribe({
         next: (matriculas) => (this.matriculas = matriculas),
@@ -59,9 +64,11 @@ export class MatriculasAdminPage {
         this.loading = false;
       });
 
-    this.materiasService.getById(1).subscribe((matricula) => {
-      this.matricula = matricula;
-      this.loading = false;
+    this.matriculasService.getById(1).subscribe({
+      next: (matricula) => {
+        this.form.patchValue(matricula);
+      },
+      error: (error) => console.error(error),
     });
   }
 }

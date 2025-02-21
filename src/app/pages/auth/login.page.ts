@@ -8,7 +8,6 @@ import {
 import { AuthLayout } from '../../layouts/auth.layout';
 import { Title } from '@angular/platform-browser';
 import { AuthService } from '../../services/auth.service';
-import { Router } from '@angular/router';
 import { NgOptimizedImage } from '@angular/common';
 import { ToastComponent } from '../../components/toast.component';
 import { ButtonComponent } from '../../components/button.component';
@@ -24,14 +23,14 @@ import { ButtonComponent } from '../../components/button.component';
   template: `
     <auth-layout>
       <form
-        class="w-2/3 flex flex-col gap-y-4"
+        class="w-2/3 flex flex-col gap-y-4 py-4"
         [formGroup]="form"
         (ngSubmit)="onSubmit()"
       >
         <div class="flex flex-col gap-y-2">
           <img
             class="max-w-12 mx-auto"
-            ngSrc="icono.png"
+            ngSrc="icono.webp"
             alt="Icono de la aplicación"
             width="48"
             height="48"
@@ -44,7 +43,7 @@ import { ButtonComponent } from '../../components/button.component';
             la institución.
           </small>
         </div>
-        <label class="relative">
+        <label class="relative" for="email">
           <!-- Email Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -62,6 +61,7 @@ import { ButtonComponent } from '../../components/button.component';
             class="w-full pl-9 pr-3 py-2 rounded-lg outline-indigo-500 focus:outline-3 text-sm bg-stone-100 border border-stone-300 placeholder:text-stone-400 dark:bg-stone-800 dark:border-stone-700"
             placeholder="Ingrese su correo electrónico"
             formControlName="email"
+            required
           />
         </label>
 
@@ -71,7 +71,7 @@ import { ButtonComponent } from '../../components/button.component';
           </small>
         }
 
-        <div class="relative">
+        <label class="relative" for="password">
           <!-- Password Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -89,9 +89,10 @@ import { ButtonComponent } from '../../components/button.component';
             placeholder="Ingrese su contraseña"
             formControlName="password"
             minlength="8"
+            required
             [type]="showPassword ? 'text' : 'password'"
           />
-          <!-- Show Password Icon -->
+          <!-- Eye Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="fill-indigo-500 absolute right-2 size-6 inset-y-0 h-full cursor-pointer"
@@ -108,7 +109,7 @@ import { ButtonComponent } from '../../components/button.component';
               />
             }
           </svg>
-        </div>
+        </label>
         <button-component
           moreStyles="px-4 py-2 flex justify-center items-center gap-x-2 w-full"
           [disabled]="this.loading"
@@ -154,7 +155,6 @@ export class LoginPage {
   public showPassword: boolean = false;
   public color: string = '';
   private title: Title = inject(Title);
-  private router: Router = inject(Router);
   private authService = inject(AuthService);
 
   public ngOnInit(): void {
@@ -169,7 +169,7 @@ export class LoginPage {
       this.authService
         .login(email, password)
         .subscribe({
-          next: () => this.router.navigate(['/admin/materias']),
+          next: () => window.location.reload(),
           error: () =>
             (this.message = 'Correo electrónico o contraseña incorrectos'),
         })

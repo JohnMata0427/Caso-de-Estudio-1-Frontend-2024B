@@ -4,20 +4,23 @@ import { MateriasAdminPage } from './pages/admin/materias.page';
 import { AuthGuard, NoAuthGuard } from './guards/auth.guard';
 import { EstudiantesAdminPage } from './pages/admin/estudiantes.page';
 import { MatriculasAdminPage } from './pages/admin/matriculas.page';
-import { AdminLayout } from './layouts/admin.layout';
 
 export const routes: Routes = [
   {
     path: 'auth',
-    children: [{ path: 'login', component: LoginPage }],
+    children: [
+      { path: 'login', component: LoginPage },
+      { path: '**', redirectTo: 'login', pathMatch: 'full' },
+    ],
     canActivate: [NoAuthGuard],
   },
   {
     path: 'admin',
     children: [
-      { path: 'materias', component: MateriasAdminPage },
       { path: 'estudiantes', component: EstudiantesAdminPage },
+      { path: 'materias', component: MateriasAdminPage },
       { path: 'matriculas', component: MatriculasAdminPage },
+      { path: '**', redirectTo: 'estudiantes', pathMatch: 'full' },
     ],
     canActivate: [AuthGuard],
   },

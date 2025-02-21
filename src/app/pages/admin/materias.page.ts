@@ -5,13 +5,14 @@ import { FormularioComponent } from '../../components/formulario.component';
 import { Materia } from '../../interfaces/materias.interface';
 import { ButtonComponent } from '../../components/button.component';
 import { TableComponent } from '../../components/table.component';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'materias-admin-page',
   imports: [AdminLayout, FormularioComponent, ButtonComponent, TableComponent],
   template: `
-    <admin-layout>
-      <div class="flex flex-col gap-y-3 mt-4">
+    <admin-layout class="flex flex-col min-h-screen">
+      <div class="flex flex-col gap-y-4 mt-2">
         <div>
           <button-component
             moreStyles="py-1 px-2 text-sm flex gap-x-1"
@@ -26,27 +27,31 @@ import { TableComponent } from '../../components/table.component';
                 d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72v-204Z"
               />
             </svg>
-            Crear Materia
+            Crear materia
           </button-component>
-          @if (materia) {
-            <formulario-component
-              title="materia"
-              [data]="materia"
-              [(opened)]="openForm"
-            />
-          }
+          <formulario-component
+            title="materias"
+            [form]="form"
+            [service]="materiasService"
+            [(opened)]="openForm"
+          />
         </div>
-        <table-component [data]="materias" />
+        <table-component [data]="materias" [loading]="loading" />
       </div>
     </admin-layout>
   `,
 })
 export class MateriasAdminPage {
-  private materiasService: MateriasService = inject(MateriasService);
+  protected materiasService: MateriasService = inject(MateriasService);
   public openForm: boolean = false;
   public loading: boolean = true;
   public materias: Materia[] = [];
-  public materia!: Materia;
+  public form = new FormGroup({
+    nombre: new FormControl('', Validators.required),
+    descripcion: new FormControl('', Validators.required),
+    codigo: new FormControl('', Validators.required),
+    creditos: new FormControl(1, Validators.required),
+  });
 
   public ngOnInit(): void {
     this.materiasService
@@ -57,9 +62,9 @@ export class MateriasAdminPage {
       })
       .add(() => (this.loading = false));
 
-    this.materiasService.getById(1).subscribe((materia) => {
-      this.materia = materia;
-      this.loading = false;
+    this.materiasService.getById(1).subscribe({
+      next: (materia) => this.form.patchValue(materia),
+      error: (error) => console.error(error),
     });
   }
 }
