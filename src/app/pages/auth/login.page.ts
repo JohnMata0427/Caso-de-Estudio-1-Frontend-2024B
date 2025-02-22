@@ -1,16 +1,16 @@
+import { ButtonComponent } from '@/components/button.component';
+import { ToastComponent } from '@/components/toast.component';
+import { AuthLayout } from '@/layouts/auth.layout';
+import { AuthService } from '@/services/auth.service';
+import { NgOptimizedImage } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import {
-  FormGroup,
   FormControl,
-  Validators,
+  FormGroup,
   ReactiveFormsModule,
+  Validators,
 } from '@angular/forms';
-import { AuthLayout } from '../../layouts/auth.layout';
 import { Title } from '@angular/platform-browser';
-import { AuthService } from '../../services/auth.service';
-import { NgOptimizedImage } from '@angular/common';
-import { ToastComponent } from '../../components/toast.component';
-import { ButtonComponent } from '../../components/button.component';
 
 @Component({
   imports: [
@@ -51,7 +51,7 @@ import { ButtonComponent } from '../../components/button.component';
             class="fill-indigo-500 absolute left-2 size-6 inset-y-0 h-full"
           >
             <path
-              d="M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21H168Zm312-245 10-1q5-1 9-5l276-158q8-5 13-13t4-19q0-21-18-32-19-10-38 1L480-517 225-663q-19-11-38-1t-19 31q0 10 5 19t13 13l276 158 9 5q5 2 9 1Z"
+              d="M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21zm312-245 10-1q5-1 9-5l276-158q8-5 13-13t4-19q0-21-18-32-19-10-38 1L480-517 225-663q-19-11-38-1t-19 31q0 10 5 19t13 13l276 158 9 5q5 2 9 1"
             />
           </svg>
           <input
@@ -79,7 +79,7 @@ import { ButtonComponent } from '../../components/button.component';
             class="fill-indigo-500 absolute left-2 size-6 inset-y-0 h-full"
           >
             <path
-              d="M264-96q-30 0-51-21t-21-51v-384q0-30 21-51t51-21h24v-96q0-80 56-136t136-56q80 0 136 56t56 136v96h24q30 0 51 21t21 51v384q0 30-21 51t-51 21H264Zm216-192q30 0 51-21t21-51q0-30-21-51t-51-21q-30 0-51 21t-21 51q0 30 21 51t51 21ZM360-624h240v-96q0-50-35-85t-85-35q-50 0-85 35t-35 85v96Z"
+              d="M264-96q-30 0-51-21t-21-51v-384q0-30 21-51t51-21h24v-96q0-80 56-136t136-56 136 56 56 136v96h24q30 0 51 21t21 51v384q0 30-21 51t-51 21zm216-192q30 0 51-21t21-51-21-51-51-21-51 21-21 51 21 51 51 21M360-624h240v-96q0-50-35-85t-85-35-85 35-35 85z"
             />
           </svg>
           <input
@@ -101,11 +101,11 @@ import { ButtonComponent } from '../../components/button.component';
           >
             @if (showPassword) {
               <path
-                d="M480-312q70 0 119-49t49-119q0-70-49-119t-119-49q-70 0-119 49t-49 119q0 70 49 119t119 49Zm0-72q-40 0-68-28t-28-68q0-40 28-68t68-28q40 0 68 28t28 68q0 40-28 68t-68 28Zm0 192q-130 0-239-69T68-445q-5-8-7-17t-2-18l2-18q2-9 7-17 64-114 173-183t239-70q130 0 239 70t173 183q5 8 7 17t2 18l-2 18q-2 9-7 17-64 114-173 184t-239 69Z"
+                d="M480-312q70 0 119-49t49-119-49-119-119-49-119 49-49 119 49 119 119 49m0-72q-40 0-68-28t-28-68 28-68 68-28 68 28 28 68-28 68-68 28m0 192q-130 0-239-69T68-445q-5-8-7-17t-2-18l2-18q2-9 7-17 64-114 173-183t239-70q130 0 239 70t173 183q5 8 7 17t2 18l-2 18q-2 9-7 17-64 114-173 184t-239 69"
               />
             } @else {
               <path
-                d="M743-116 638-220q-38 12-77 20t-81 8q-131 0-240-69T67-445q-5-8-7-17t-2-18q0-9 3-18t7-17q25-43 55-82t67-72l-75-75q-11-11-11-25t11-25q11-11 26-11t25 11l628 628q11 11 11 25t-11 25q-11 11-25 11t-26-11ZM480-312q14 0 28-3t28-7L322-536l-6 28-4 28q0 70 49 119t119 49Zm0-456q131 0 241 69t173 185q5 8 7 17t2 17l-2 18q-2 9-7 16-19 35-42 67t-52 60q-12 12-29 12t-29-13l-91-91q-6-6-8-15t0-17l4-18q2-9 1-19 0-70-49-119t-119-49q-10 0-19 2t-18 3q-8 2-16 0t-15-8l-41-41q-17-17-11-40t29-28q23-5 46-6t45-2Zm73 217q8 8 13 18t7 20q2 7-4 10t-12-2l-51-52q-5-5-2-11t10-6q11 3 21 9t18 14Z"
+                d="M743-116 638-220q-38 12-77 20t-81 8q-131 0-240-69T67-445q-5-8-7-17t-2-18 3-18 7-17q25-43 55-82t67-72l-75-75q-11-11-11-25t11-25 26-11 25 11l628 628q11 11 11 25t-11 25-25 11-26-11M480-312q14 0 28-3t28-7L322-536l-6 28-4 28q0 70 49 119t119 49m0-456q131 0 241 69t173 185q5 8 7 17t2 17l-2 18q-2 9-7 16-19 35-42 67t-52 60q-12 12-29 12t-29-13l-91-91q-6-6-8-15t0-17l4-18q2-9 1-19 0-70-49-119t-119-49q-10 0-19 2t-18 3q-8 2-16 0t-15-8l-41-41q-17-17-11-40t29-28 46-6 45-2m73 217q8 8 13 18t7 20q2 7-4 10t-12-2l-51-52q-5-5-2-11t10-6q11 3 21 9t18 14"
               />
             }
           </svg>
@@ -116,23 +116,25 @@ import { ButtonComponent } from '../../components/button.component';
         >
           @if (!loading) {
             Iniciar sesión
+            <!-- Send Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
               class="fill-stone-100 size-6"
             >
               <path
-                d="M193-212q-18 7-33-3t-16-30v-139l288-96-288-96v-139q0-19 16-29t33-4l587 235q23 9 23 33t-23 33L193-212Z"
+                d="M193-212q-18 7-33-3t-16-30v-139l288-96-288-96v-139q0-19 16-29t33-4l587 235q23 9 23 33t-23 33z"
               />
             </svg>
           } @else {
+            <!-- Spinner Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="fill-indigo-400 size-6 animate-spin opacity-90"
               viewBox="0 -960 960 960"
             >
               <path
-                d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480q0-87 33-163t89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17q25 0 42 17t17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33Z"
+                d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480t33-163 89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17 42 17 17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33"
               />
             </svg>
           }
@@ -170,8 +172,7 @@ export class LoginPage {
         .login(email, password)
         .subscribe({
           next: () => window.location.reload(),
-          error: () =>
-            (this.message = 'Correo electrónico o contraseña incorrectos'),
+          error: ({ error }) => (this.message = error.response),
         })
         .add(() => (this.loading = false));
     } else this.message = 'Por favor, complete los campos correctamente';

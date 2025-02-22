@@ -24,8 +24,32 @@
   }
 }
 
+@keyframes slideInBottom {
+  from {
+    transform: translateY(25px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutTop {
+  from {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateY(-25px);
+    opacity: 0;
+  }
+}
+
 @theme {
   --font-inter: 'Inter', serif;
   --animate-slide-out-left: slideOutLeft 0.7s forwards;
   --animate-slide-in-right: slideInRight 0.7s forwards;
+  --animate-slide-out-top: slideOutTop 0.7s ease;
+  --animate-slide-in-bottom: slideInBottom 0.7s ease;
 }

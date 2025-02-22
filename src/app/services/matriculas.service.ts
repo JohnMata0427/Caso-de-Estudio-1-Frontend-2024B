@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '@/environments/environment';
+import { Matricula } from '@/interfaces/matricula.interface';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
-import { Matricula } from '../interfaces/matricula.interface';
 
 @Injectable({
   providedIn: 'root',

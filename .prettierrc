@@ -3,7 +3,8 @@
   "htmlWhitespaceSensitivity": "ignore",
   "plugins": [
     "prettier-plugin-tailwindcss",
-    "prettier-plugin-organize-attributes"
+    "prettier-plugin-organize-attributes",
+    "prettier-plugin-organize-imports"
   ],
   "attributeGroups": [
     "$DEFAULT",

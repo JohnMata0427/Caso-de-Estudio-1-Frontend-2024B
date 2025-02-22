@@ -1,8 +1,14 @@
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '@/environments/environment';
+import { Estudiante } from '@/interfaces/estudiante.interface';
+import { Matricula } from '@/interfaces/matricula.interface';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
-import { Estudiante } from '../interfaces/estudiante.interface';
+
+interface ResponseEstudianteById {
+  estudiante: Estudiante;
+  matriculas: Matricula[];
+}
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +32,8 @@ export class EstudiantesService {
       .pipe(tap((estudiantes) => (this.estudiantes = estudiantes)));
   }
 
-  public getById(id: number): Observable<Estudiante> {
-    return this.http.get<Estudiante>(`${this.backendUrl}/${id}`, {
+  public getById(id: number): Observable<ResponseEstudianteById> {
+    return this.http.get<ResponseEstudianteById>(`${this.backendUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

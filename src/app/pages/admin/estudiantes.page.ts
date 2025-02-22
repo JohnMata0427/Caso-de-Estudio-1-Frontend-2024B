@@ -1,10 +1,10 @@
+import { ButtonComponent } from '@/components/button.component';
+import { FormularioComponent } from '@/components/formulario.component';
+import { TableComponent } from '@/components/table.component';
+import { Estudiante } from '@/interfaces/estudiante.interface';
+import { AdminLayout } from '@/layouts/admin.layout';
+import { EstudiantesService } from '@/services/estudiantes.service';
 import { Component, inject } from '@angular/core';
-import { AdminLayout } from '../../layouts/admin.layout';
-import { EstudiantesService } from '../../services/estudiantes.service';
-import { FormularioComponent } from '../../components/formulario.component';
-import { Estudiante } from '../../interfaces/estudiante.interface';
-import { ButtonComponent } from '../../components/button.component';
-import { TableComponent } from '../../components/table.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -18,14 +18,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
             moreStyles="py-1 px-2 text-sm flex gap-x-1"
             (click)="openForm = true"
           >
+            <!-- Create Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="fill-stone-100 size-5"
               viewBox="0 -960 960 960"
             >
-              <path
-                d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72v-204Z"
-              />
+              <path d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72z" />
             </svg>
             Crear estudiante
           </button-component>
@@ -36,7 +35,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
             [(opened)]="openForm"
           />
         </div>
-        <table-component [data]="estudiantes" [loading]="loading" />
+        <table-component
+          title="estudiantes"
+          [data]="estudiantes"
+          [loading]="loading"
+          [form]="form"
+          [service]="estudiantesService"
+        />
       </div>
     </admin-layout>
   `,
@@ -47,14 +52,20 @@ export class EstudiantesAdminPage {
   public loading: boolean = true;
   public estudiantes: Estudiante[] = [];
   public form = new FormGroup({
-    nombre: new FormControl('', Validators.required),
-    apellido: new FormControl('', Validators.required),
+    nombre: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    apellido: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
     cedula: new FormControl('', Validators.required),
     fecha_nacimiento: new FormControl('', Validators.required),
-    ciudad: new FormControl('', Validators.required),
-    direccion: new FormControl('', Validators.required),
+    ciudad: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    direccion: new FormControl('', [
+      Validators.required,
+      Validators.minLength(3),
+    ]),
     telefono: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.required),
+    email: new FormControl('', [Validators.required, Validators.email]),
   });
 
   public ngOnInit(): void {
@@ -65,12 +76,5 @@ export class EstudiantesAdminPage {
         error: (error) => console.error(error),
       })
       .add(() => (this.loading = false));
-
-    this.estudiantesService.getById(1).subscribe({
-      next: (estudiante) => {
-        this.form.patchValue(estudiante);
-      },
-      error: (error) => console.error(error),
-    });
   }
 }

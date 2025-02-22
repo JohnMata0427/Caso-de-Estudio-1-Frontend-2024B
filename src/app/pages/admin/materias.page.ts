@@ -1,10 +1,10 @@
+import { ButtonComponent } from '@/components/button.component';
+import { FormularioComponent } from '@/components/formulario.component';
+import { TableComponent } from '@/components/table.component';
+import { Materia } from '@/interfaces/materias.interface';
+import { AdminLayout } from '@/layouts/admin.layout';
+import { MateriasService } from '@/services/materias.service';
 import { Component, inject } from '@angular/core';
-import { AdminLayout } from '../../layouts/admin.layout';
-import { MateriasService } from '../../services/materias.service';
-import { FormularioComponent } from '../../components/formulario.component';
-import { Materia } from '../../interfaces/materias.interface';
-import { ButtonComponent } from '../../components/button.component';
-import { TableComponent } from '../../components/table.component';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -18,14 +18,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
             moreStyles="py-1 px-2 text-sm flex gap-x-1"
             (click)="openForm = true"
           >
+            <!-- Create Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="fill-stone-100 size-5"
               viewBox="0 -960 960 960"
             >
-              <path
-                d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72v-204Z"
-              />
+              <path d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72z" />
             </svg>
             Crear materia
           </button-component>
@@ -36,7 +35,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
             [(opened)]="openForm"
           />
         </div>
-        <table-component [data]="materias" [loading]="loading" />
+        <table-component
+          title="materias"
+          [data]="materias"
+          [loading]="loading"
+          [form]="form"
+          [service]="materiasService"
+        />
       </div>
     </admin-layout>
   `,
@@ -47,10 +52,17 @@ export class MateriasAdminPage {
   public loading: boolean = true;
   public materias: Materia[] = [];
   public form = new FormGroup({
-    nombre: new FormControl('', Validators.required),
-    descripcion: new FormControl('', Validators.required),
-    codigo: new FormControl('', Validators.required),
-    creditos: new FormControl(1, Validators.required),
+    nombre: new FormControl('', [Validators.required, Validators.minLength(3)]),
+    descripcion: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+    ]),
+    codigo: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    creditos: new FormControl(1, [
+      Validators.required,
+      Validators.min(1),
+      Validators.max(10),
+    ]),
   });
 
   public ngOnInit(): void {
@@ -61,10 +73,5 @@ export class MateriasAdminPage {
         error: (error) => console.error(error),
       })
       .add(() => (this.loading = false));
-
-    this.materiasService.getById(1).subscribe({
-      next: (materia) => this.form.patchValue(materia),
-      error: (error) => console.error(error),
-    });
   }
 }

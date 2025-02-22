@@ -1,5 +1,3 @@
-import { Matricula } from './matricula.interface';
-
 export interface Estudiante {
   id: number;
   nombre: string;
@@ -10,5 +8,4 @@ export interface Estudiante {
   direccion: string;
   telefono: string;
   email: string;
-  matriculas: Matricula[];
 }

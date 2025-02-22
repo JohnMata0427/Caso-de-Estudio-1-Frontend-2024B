@@ -1,10 +1,10 @@
+import { ButtonComponent } from '@/components/button.component';
+import { FormularioComponent } from '@/components/formulario.component';
+import { TableComponent } from '@/components/table.component';
+import { Matricula } from '@/interfaces/matricula.interface';
+import { AdminLayout } from '@/layouts/admin.layout';
+import { MatriculasService } from '@/services/matriculas.service';
 import { Component, inject } from '@angular/core';
-import { AdminLayout } from '../../layouts/admin.layout';
-import { ButtonComponent } from '../../components/button.component';
-import { FormularioComponent } from '../../components/formulario.component';
-import { TableComponent } from '../../components/table.component';
-import { Matricula } from '../../interfaces/matricula.interface';
-import { MatriculasService } from '../../services/matriculas.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -18,14 +18,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
             moreStyles="py-1 px-2 text-sm flex gap-x-1"
             (click)="openForm = true"
           >
+            <!-- Create Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="fill-stone-100 size-5"
               viewBox="0 -960 960 960"
             >
-              <path
-                d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72v-204Z"
-              />
+              <path d="M444-444H240v-72h204v-204h72v204h204v72H516v204h-72z" />
             </svg>
             Crear matricula
           </button-component>
@@ -36,7 +35,13 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
             [(opened)]="openForm"
           />
         </div>
-        <table-component [data]="matriculas" [loading]="loading" />
+        <table-component
+          title="matriculas"
+          [data]="matriculas"
+          [loading]="loading"
+          [service]="matriculasService"
+          [form]="form"
+        />
       </div>
     </admin-layout>
   `,
@@ -47,10 +52,13 @@ export class MatriculasAdminPage {
   public openForm: boolean = false;
   public matriculas: Matricula[] = [];
   public form = new FormGroup({
-    codigo: new FormControl('', Validators.required),
-    descripcion: new FormControl('', Validators.required),
-    id_estudiante: new FormControl(1, Validators.required),
-    id_materia: new FormControl(1, Validators.required),
+    codigo: new FormControl('', [Validators.required, Validators.minLength(6)]),
+    descripcion: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+    ]),
+    id_estudiante: new FormControl(1, [Validators.required, Validators.min(1)]),
+    id_materia: new FormControl(1, [Validators.required, Validators.min(1)]),
   });
 
   public ngOnInit(): void {
@@ -63,12 +71,5 @@ export class MatriculasAdminPage {
       .add(() => {
         this.loading = false;
       });
-
-    this.matriculasService.getById(1).subscribe({
-      next: (matricula) => {
-        this.form.patchValue(matricula);
-      },
-      error: (error) => console.error(error),
-    });
   }
 }

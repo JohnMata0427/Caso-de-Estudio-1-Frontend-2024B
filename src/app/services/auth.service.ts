@@ -1,8 +1,8 @@
-import { inject, Injectable } from '@angular/core';
-import { environment } from '../../environments/environment';
+import { environment } from '@/environments/environment';
+import { Usuario } from '@/interfaces/usuario.interface';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
-import { Usuario } from '../interfaces/usuario.interface';
 
 interface Response {
   token: string;
