@@ -3,14 +3,13 @@ import { ToastComponent } from '@/components/toast.component';
 import { AuthLayout } from '@/layouts/auth.layout';
 import { AuthService } from '@/services/auth.service';
 import { NgOptimizedImage } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import {
   FormControl,
   FormGroup,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Title } from '@angular/platform-browser';
 
 @Component({
   imports: [
@@ -20,6 +19,7 @@ import { Title } from '@angular/platform-browser';
     ToastComponent,
     ButtonComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <auth-layout>
       <form
@@ -65,12 +65,6 @@ import { Title } from '@angular/platform-browser';
           />
         </label>
 
-        @if (form.get('email')?.value && form.get('email')?.invalid) {
-          <small class="text-xs text-red-500 dark:text-red-400 text-center">
-            Por favor, ingrese un correo electrónico válido
-          </small>
-        }
-
         <label class="relative" for="password">
           <!-- Password Icon -->
           <svg
@@ -90,16 +84,16 @@ import { Title } from '@angular/platform-browser';
             formControlName="password"
             minlength="8"
             required
-            [type]="showPassword ? 'text' : 'password'"
+            [type]="showPassword() ? 'text' : 'password'"
           />
           <!-- Eye Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="fill-indigo-500 absolute right-2 size-6 inset-y-0 h-full cursor-pointer"
             viewBox="0 -960 960 960"
-            (click)="showPassword = !showPassword"
+            (click)="togglePasswordVisibility()"
           >
-            @if (showPassword) {
+            @if (showPassword()) {
               <path
                 d="M480-312q70 0 119-49t49-119-49-119-119-49-119 49-49 119 49 119 119 49m0-72q-40 0-68-28t-28-68 28-68 68-28 68 28 28 68-28 68-68 28m0 192q-130 0-239-69T68-445q-5-8-7-17t-2-18l2-18q2-9 7-17 64-114 173-183t239-70q130 0 239 70t173 183q5 8 7 17t2 18l-2 18q-2 9-7 17-64 114-173 184t-239 69"
               />
@@ -112,9 +106,9 @@ import { Title } from '@angular/platform-browser';
         </label>
         <button-component
           moreStyles="px-4 py-2 flex justify-center items-center gap-x-2 w-full"
-          [disabled]="this.loading"
+          [disabled]="loading()"
         >
-          @if (!loading) {
+          @if (!loading()) {
             Iniciar sesión
             <!-- Send Icon -->
             <svg
@@ -141,7 +135,11 @@ import { Title } from '@angular/platform-browser';
         </button-component>
       </form>
     </auth-layout>
-    <toast-component type="error" [(message)]="message" />
+    <toast-component
+      [success]="false"
+      [message]="errorMessage()"
+      [(opened)]="showToast"
+    />
   `,
 })
 export class LoginPage {
@@ -152,29 +150,30 @@ export class LoginPage {
       Validators.minLength(8),
     ]),
   });
-  public message: string = '';
-  public loading: boolean = false;
-  public showPassword: boolean = false;
-  public color: string = '';
-  private title: Title = inject(Title);
   private authService = inject(AuthService);
+  public errorMessage = signal<string>('');
+  public showToast = signal<boolean>(false);
+  public loading = signal<boolean>(false);
+  public showPassword = signal<boolean>(false);
 
-  public ngOnInit(): void {
-    this.title.setTitle('Iniciar sesión • Sistema de Gestión de Matriculas');
-  }
+  public togglePasswordVisibility = (): void =>
+    this.showPassword.update((state) => !state);
 
   public onSubmit(): void {
     if (this.form.valid) {
-      this.loading = true;
-      const { email, password } = this.form.value;
+      this.loading.set(true);
 
       this.authService
-        .login(email, password)
+        .login(this.form.value)
         .subscribe({
           next: () => window.location.reload(),
-          error: ({ error }) => (this.message = error.response),
+          error: ({ error }) => {
+            this.errorMessage.set(error.response);
+            this.showToast.set(true);
+          },
         })
-        .add(() => (this.loading = false));
-    } else this.message = 'Por favor, complete los campos correctamente';
+        .add(() => this.loading.set(false));
+    } else
+      this.errorMessage.set('Por favor, complete los campos correctamente');
   }
 }

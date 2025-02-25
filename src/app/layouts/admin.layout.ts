@@ -2,13 +2,20 @@ import { Usuario } from '@/interfaces/usuario.interface';
 import { AuthService } from '@/services/auth.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { NgClass, NgOptimizedImage, TitleCasePipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { Title } from '@angular/platform-browser';
-import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'admin-layout',
   imports: [RouterLink, NgClass, NgOptimizedImage, TitleCasePipe],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header
       class="py-2 px-6 border-b border-stone-300 dark:border-stone-800 flex justify-between items-center"
@@ -16,7 +23,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
       <div class="flex gap-x-3 items-center">
         <button
           class="border border-stone-300 dark:border-stone-700 rounded-lg p-1 hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors cursor-pointer"
-          (click)="showNav = !showNav"
+          (click)="toggleNav()"
         >
           <!-- Menu Hamburger Icon -->
           <svg
@@ -51,7 +58,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
             class="size-5 fill-stone-800 dark:fill-stone-100"
             viewBox="0 -960 960 960"
           >
-            @if (isDarkMode) {
+            @if (isDarkMode()) {
               <path
                 d="M480-360q50 0 85-35t35-85-35-85-85-35-85 35-35 85 35 85 85 35m0 72q-80 0-136-56t-56-136 56-136 136-56 136 56 56 136-56 136-136 56M216-444H48v-72h168zm696 0H744v-72h168zM444-744v-168h72v168zm0 696v-168h72v168zM269-642 166-742l51-55 102 104zm474 475L642-268l49-51 103 101zM640-691l102-101 51 49-100 103zM163-217l105-99 49 47-98 104zm317-263"
               />
@@ -80,19 +87,19 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
         </button>
       </div>
     </header>
-    <main class="flex h-full w-full flex-1">
+    <main class="flex flex-1">
       <nav
-        class="px-6 py-4 border-r border-stone-300 dark:border-stone-800 fixed lg:static bg-stone-100 dark:bg-stone-900 z-10 h-full sm:h-auto"
+        class="px-6 py-4 border-r border-stone-300 dark:border-stone-800 lg:static bg-stone-100 dark:bg-stone-900 flex flex-col z-10 fixed"
         [ngClass]="{
-          'animate-slide-out-left': !showNav,
-          'animate-slide-in-right lg:animate-none': showNav,
+          'animate-slide-out-left': !showNav(),
+          'animate-slide-in-right lg:animate-none': showNav(),
         }"
       >
         <h3 class="text-sm font-bold">Bienvenido</h3>
         <article
           class="flex flex-col items-center justify-center my-5 h-22 w-40"
         >
-          @if (loading) {
+          @if (loading()) {
             <!-- Spinner Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -116,10 +123,10 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
               />
             </svg>
             <strong class="text-sm font-medium">
-              {{ user.nombre }} {{ user.apellido }}
+              {{ user().nombre }} {{ user().apellido }}
             </strong>
             <small class="text-[10px] text-stone-700 dark:text-stone-300">
-              {{ user.email }}
+              {{ user().email }}
             </small>
             <p class="text-xs mt-1">
               <span class="text-green-500">•</span>
@@ -130,7 +137,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
         <h3 class="text-sm font-bold my-1">Dashboard</h3>
         <ul class="flex flex-col gap-y-1 text-sm">
           @for (route of routes; track $index) {
-            @let condition = activedUrl === route.path;
+            @let condition = activedUrl() === route.path;
             <li>
               <a
                 class="flex gap-x-2 py-1 pl-2 pr-6 rounded-lg transition-colors duration-300 hover:bg-indigo-100 hover:text-indigo-500 group active:bg-indigo-200 font-medium items-center dark:hover:bg-indigo-950 dark:active:bg-indigo-900"
@@ -156,92 +163,92 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
           }
         </ul>
       </nav>
-      <section class="py-4 px-6 w-full">
-        <aside class="flex gap-x-2 items-center">
-          <!-- Dashboard Icon -->
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="size-7 fill-stone-800 dark:fill-stone-100"
-            viewBox="0 -960 960 960"
-          >
-            <path
-              d="M528-624v-192h288v192zM144-432v-384h288v384zm384 288v-384h288v384zm-384 0v-192h288v192z"
-            />
-          </svg>
-          <ul class="flex gap-x-1 text-sm items-center font-medium">
-            <li><span>Admin ></span></li>
-            <li>
-              <span>{{ activedUrl | titlecase }}</span>
-            </li>
-          </ul>
-        </aside>
+      <section class="py-4 px-6 flex flex-col w-full gap-y-4">
+        <img
+          src="banner.webp"
+          alt="Fondo de la aplicación"
+          class="object-cover h-20 sm:h-40 w-full rounded-lg object-left"
+        />
+        
         <ng-content />
       </section>
     </main>
   `,
 })
 export class AdminLayout {
-  private activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private authService: AuthService = inject(AuthService);
-  private title: Title = inject(Title);
-  private router: Router = inject(Router);
-  private breakpointObserver: BreakpointObserver = inject(BreakpointObserver);
+  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
+  private readonly authService: AuthService = inject(AuthService);
+  private readonly title: Title = inject(Title);
+  private readonly breakpointObserver: BreakpointObserver =
+    inject(BreakpointObserver);
 
-  public activedUrl: string = this.activatedRoute.snapshot.url[0].path;
-  public user: Partial<Usuario> = {};
-  public loading: boolean = true;
-  public showNav: boolean = true;
-  public isDarkMode: boolean = localStorage.getItem('theme') === 'dark';
-  public routes: { path: string; icon: string; iconFilled: string }[] = [
-    {
-      path: 'estudiantes',
-      icon: 'M480-144 216-276v-240L48-600l432-216 432 216v312h-72v-276l-96 48v240zm0-321 271-135-271-135-271 135zm0 240 192-96v-159l-192 96-192-96v159zm0-159',
-      iconFilled:
-        'M840-288v-276L480-384 48-600l432-216 432 216v312zM480-144 216-276v-159l264 132 264-132v159z',
-    },
-    {
-      path: 'materias',
-      icon: 'M324-96q-55 0-93-39-39-38-39-93v-504q0-55 39-93 38-39 93-39h444v575q-25 0-42 18t-18 43q0 26 18 44 17 17 42 17v71zm-60-250q14-7 29-10t31-4h12v-432h-12q-25 0-42 18t-18 42zm144-14h288v-432H408zm-144 14v-446zm60 178h326q-7-14-10-28t-4-31q0-17 4-32t11-29H324q-26 0-43 18t-17 42q0 26 17 43t43 17',
-      iconFilled:
-        'M324-96q-55 0-93-39-39-38-39-93v-504q0-55 39-93 38-39 93-39h444v575q-25 0-42 18t-18 43q0 26 18 44 17 17 42 17v71zm12-264h72v-432h-72zm-12 192h326q-7-14-10-28t-4-31q0-17 4-32t11-29H324q-26 0-43 18t-17 42q0 26 17 43t43 17',
-    },
-    {
-      path: 'matriculas',
-      icon: 'M528-432h216v-72H528zm0-120h216v-72H528zM192-336h288v-45q0-29-44-52t-100-23q-57 0-100 23t-44 52zm144-144q30 0 51-21t21-51-21-51-51-21-51 21-21 51 21 51 51 21M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21zm0-72h624v-432H168zm0 0v-432z',
-      iconFilled:
-        'M528-432h216v-72H528zm0-120h216v-72H528zM192-336h288v-45q0-29-44-52t-100-23q-57 0-100 23t-44 52zm144-144q30 0 51-21t21-51-21-51-51-21-51 21-21 51 21 51 51 21M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21z',
-    },
-  ];
+  public readonly user = signal<Partial<Usuario>>({});
+  public readonly loading = signal<boolean>(true);
+  public readonly showNav = signal<boolean>(true);
+  public readonly isDarkMode = signal<boolean>(
+    localStorage.getItem('theme') === 'dark',
+  );
+  public readonly activedUrl = computed<string>(
+    () => this.activatedRoute.snapshot.url[0].path,
+  );
+  public readonly routes: { path: string; icon: string; iconFilled: string }[] =
+    [
+      {
+        path: 'estudiantes',
+        icon: 'M480-144 216-276v-240L48-600l432-216 432 216v312h-72v-276l-96 48v240zm0-321 271-135-271-135-271 135zm0 240 192-96v-159l-192 96-192-96v159zm0-159',
+        iconFilled:
+          'M840-288v-276L480-384 48-600l432-216 432 216v312zM480-144 216-276v-159l264 132 264-132v159z',
+      },
+      {
+        path: 'materias',
+        icon: 'M324-96q-55 0-93-39-39-38-39-93v-504q0-55 39-93 38-39 93-39h444v575q-25 0-42 18t-18 43q0 26 18 44 17 17 42 17v71zm-60-250q14-7 29-10t31-4h12v-432h-12q-25 0-42 18t-18 42zm144-14h288v-432H408zm-144 14v-446zm60 178h326q-7-14-10-28t-4-31q0-17 4-32t11-29H324q-26 0-43 18t-17 42q0 26 17 43t43 17',
+        iconFilled:
+          'M324-96q-55 0-93-39-39-38-39-93v-504q0-55 39-93 38-39 93-39h444v575q-25 0-42 18t-18 43q0 26 18 44 17 17 42 17v71zm12-264h72v-432h-72zm-12 192h326q-7-14-10-28t-4-31q0-17 4-32t11-29H324q-26 0-43 18t-17 42q0 26 17 43t43 17',
+      },
+      {
+        path: 'matriculas',
+        icon: 'M528-432h216v-72H528zm0-120h216v-72H528zM192-336h288v-45q0-29-44-52t-100-23q-57 0-100 23t-44 52zm144-144q30 0 51-21t21-51-21-51-51-21-51 21-21 51 21 51 51 21M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21zm0-72h624v-432H168zm0 0v-432z',
+        iconFilled:
+          'M528-432h216v-72H528zm0-120h216v-72H528zM192-336h288v-45q0-29-44-52t-100-23q-57 0-100 23t-44 52zm144-144q30 0 51-21t21-51-21-51-51-21-51 21-21 51 21 51 51 21M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21z',
+      },
+    ];
 
-  public ngOnInit(): void {
+  constructor() {
     window
       .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', ({ matches }) => (this.isDarkMode = matches));
+      .addEventListener('change', ({ matches }) =>
+        this.isDarkMode.set(matches),
+      );
 
     this.title.setTitle(
-      `${new TitleCasePipe().transform(this.activedUrl)} Dashboard • Sistema de Gestión de Matriculas`,
+      `${new TitleCasePipe().transform(this.activedUrl())} Dashboard • Sistema de Gestión de Matriculas`,
     );
 
     this.authService
       .profile()
-      .subscribe({ next: ({ usuario }) => (this.user = usuario) })
-      .add(() => (this.loading = false));
+      .subscribe({
+        next: ({ usuario }) => {
+          this.user.set(usuario);
+        },
+      })
+      .add(() => this.loading.set(false));
 
     const { Medium, Large, XLarge } = Breakpoints;
-
     this.breakpointObserver.observe([Medium, Large, XLarge]).subscribe({
-      next: ({ matches }) => (this.showNav = matches),
+      next: ({ matches }) => this.showNav.set(matches),
     });
   }
 
+  public toggleNav = (): void => this.showNav.update((state) => !state);
+
   public logout(): void {
     localStorage.removeItem('token');
-    this.router.navigate(['/auth/login']);
+    window.location.reload();
   }
 
   public toggleDarkMode(): void {
-    this.isDarkMode = !this.isDarkMode;
-    localStorage.setItem('theme', this.isDarkMode ? 'dark' : 'light');
-    document.body.classList.toggle('dark', this.isDarkMode);
+    this.isDarkMode.update((state) => !state);
+    localStorage.setItem('theme', this.isDarkMode() ? 'dark' : 'light');
+    document.body.classList.toggle('dark', this.isDarkMode());
   }
 }

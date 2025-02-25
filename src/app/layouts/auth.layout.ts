@@ -3,7 +3,7 @@ import { Component } from '@angular/core';
 @Component({
   selector: 'auth-layout',
   template: `
-    <main class="flex h-screen items-center justify-center p-1.5">
+    <main class="flex h-dvh items-center justify-center p-1.5">
       <img
         src="fondo.webp"
         alt="Authentication Image"

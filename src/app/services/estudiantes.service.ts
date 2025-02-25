@@ -2,7 +2,7 @@ import { environment } from '@/environments/environment';
 import { Estudiante } from '@/interfaces/estudiante.interface';
 import { Matricula } from '@/interfaces/matricula.interface';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 
 interface ResponseEstudianteById {
@@ -14,26 +14,26 @@ interface ResponseEstudianteById {
   providedIn: 'root',
 })
 export class EstudiantesService {
-  private backendUrl: string = environment.backendUrl + '/estudiantes';
-  private http: HttpClient = inject(HttpClient);
-  private estudiantes: Estudiante[] = [];
+  private _http: HttpClient = inject(HttpClient);
+  private _backendUrl: string = environment.backendUrl + '/estudiantes';
+  private estudiantes = signal<Estudiante[]>([]);
 
   public getAll(): Observable<Estudiante[]> {
-    if (this.estudiantes.length) {
-      return of(this.estudiantes);
+    if (this.estudiantes().length) {
+      return of(this.estudiantes());
     }
 
-    return this.http
-      .get<Estudiante[]>(this.backendUrl, {
+    return this._http
+      .get<Estudiante[]>(this._backendUrl, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
-      .pipe(tap((estudiantes) => (this.estudiantes = estudiantes)));
+      .pipe(tap((estudiantes) => this.estudiantes.set(estudiantes)));
   }
 
   public getById(id: number): Observable<ResponseEstudianteById> {
-    return this.http.get<ResponseEstudianteById>(`${this.backendUrl}/${id}`, {
+    return this._http.get<ResponseEstudianteById>(`${this._backendUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
@@ -41,44 +41,54 @@ export class EstudiantesService {
   }
 
   public create(materia: Estudiante): Observable<Estudiante> {
-    return this.http
-      .post<Estudiante>(this.backendUrl, materia, {
+    return this._http
+      .post<Estudiante>(this._backendUrl, materia, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
-      .pipe(tap((estudiante) => this.estudiantes.push(estudiante)));
+      .pipe(
+        tap((estudiante) =>
+          this.estudiantes.update((state) => [...state, estudiante]),
+        ),
+      );
   }
 
   public update(
     id: number,
     materia: Partial<Estudiante>,
   ): Observable<Estudiante> {
-    return this.http
-      .put<Estudiante>(`${this.backendUrl}/${id}`, materia, {
+    return this._http
+      .put<Estudiante>(`${this._backendUrl}/${id}`, materia, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .pipe(
         tap((estudiante) => {
-          const index = this.estudiantes.findIndex((e) => e.id === id);
-          this.estudiantes[index] = estudiante;
+          const index = this.estudiantes().findIndex((e) => e.id === id);
+          this.estudiantes.update((state) => {
+            state[index] = estudiante;
+            return state;
+          });
         }),
       );
   }
 
   public delete(id: number): Observable<void> {
-    return this.http
-      .delete<void>(`${this.backendUrl}/${id}`, {
+    return this._http
+      .delete<void>(`${this._backendUrl}/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .pipe(
         tap(() => {
-          const index = this.estudiantes.findIndex((e) => e.id === id);
-          this.estudiantes.splice(index, 1);
+          const index = this.estudiantes().findIndex((e) => e.id === id);
+          this.estudiantes.update((state) => {
+            state.splice(index, 1);
+            return state;
+          });
         }),
       );
   }

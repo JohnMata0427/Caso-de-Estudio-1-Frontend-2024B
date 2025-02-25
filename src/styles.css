@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&display=swap');
 @import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
@@ -6,9 +6,11 @@
 @keyframes slideInRight {
   from {
     transform: translateX(-100%);
+    height: 100%;
   }
   to {
     transform: translateX(0);
+    height: 100%;
   }
 }
 
@@ -16,11 +18,13 @@
   from {
     transform: translateX(0);
     position: fixed;
+    height: 100%;
   }
   to {
     transform: translateX(-100%);
     position: fixed;
     display: none;
+    height: 100%;
   }
 }
 
@@ -46,10 +50,30 @@
   }
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  --tw-inset-shadow-color: transparent;
+  transition: background-color 5000s ease-in-out 0s;
+  &:where(.dark, .dark *) {
+    -webkit-text-fill-color: var(--color-stone-100);
+  }
+}
+
+::-webkit-scrollbar {
+  width: calc(var(--spacing) * 1.5);
+  height: calc(var(--spacing) * 1.5);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-stone-500);
+  border-radius: var(--radius-lg);
+}
+
 @theme {
   --font-inter: 'Inter', serif;
-  --animate-slide-out-left: slideOutLeft 0.7s forwards;
-  --animate-slide-in-right: slideInRight 0.7s forwards;
-  --animate-slide-out-top: slideOutTop 0.7s ease;
-  --animate-slide-in-bottom: slideInBottom 0.7s ease;
+  --animate-slide-out-left: slideOutLeft 0.65s forwards;
+  --animate-slide-in-right: slideInRight 0.65s forwards;
+  --animate-slide-out-top: slideOutTop 0.65s ease;
+  --animate-slide-in-bottom: slideInBottom 0.65s ease;
 }

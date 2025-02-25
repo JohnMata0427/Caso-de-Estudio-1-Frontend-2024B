@@ -1,29 +1,27 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <router-outlet />
   `,
 })
 export class AppComponent {
-  public ngOnInit(): void {
-    const theme = localStorage.getItem('theme');
-    const isDark = theme === 'dark';
-
+  constructor() {
+    const isDark = localStorage.getItem('theme') === 'dark';
     document.body.classList.toggle('dark', isDark);
-
     this.setupThemeChangeListener();
   }
 
   private setupThemeChangeListener(): void {
     window
       .matchMedia('(prefers-color-scheme: dark)')
-      .addEventListener('change', (event) => {
-        document.body.classList.toggle('dark', event.matches);
-        localStorage.setItem('theme', event.matches ? 'dark' : 'light');
+      .addEventListener('change', ({ matches }) => {
+        document.body.classList.toggle('dark', matches);
+        localStorage.setItem('theme', matches ? 'dark' : 'light');
       });
   }
 }

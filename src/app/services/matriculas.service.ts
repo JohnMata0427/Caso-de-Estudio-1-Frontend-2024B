@@ -1,78 +1,88 @@
 import { environment } from '@/environments/environment';
 import { Matricula } from '@/interfaces/matricula.interface';
 import { HttpClient } from '@angular/common/http';
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class MatriculasService {
-  private backendUrl: string = environment.backendUrl + '/matriculas';
-  private http: HttpClient = inject(HttpClient);
-  private matriculas: Matricula[] = [];
+  private _backendUrl: string = environment.backendUrl + '/matriculas';
+  private _http: HttpClient = inject(HttpClient);
+  private matriculas = signal<Matricula[]>([]);
 
   public getAll(): Observable<Matricula[]> {
-    if (this.matriculas.length) {
-      return of(this.matriculas);
+    if (this.matriculas().length) {
+      return of(this.matriculas());
     }
 
-    return this.http
-      .get<Matricula[]>(this.backendUrl, {
+    return this._http
+      .get<Matricula[]>(this._backendUrl, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
-      .pipe(tap((matriculas) => (this.matriculas = matriculas)));
+      .pipe(tap((matriculas) => this.matriculas.set(matriculas)));
   }
 
   public getById(id: number): Observable<Matricula> {
-    return this.http.get<Matricula>(`${this.backendUrl}/${id}`, {
+    return this._http.get<Matricula>(`${this._backendUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },
     });
   }
 
-  public create(materia: Matricula): Observable<Matricula> {
-    return this.http
-      .post<Matricula>(this.backendUrl, materia, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        },
-      })
-      .pipe(tap((newMatricula) => this.matriculas.push(newMatricula)));
-  }
-
-  public update(
-    id: number,
-    materia: Partial<Matricula>,
-  ): Observable<Matricula> {
-    return this.http
-      .put<Matricula>(`${this.backendUrl}/${id}`, materia, {
+  public create(matricula: Matricula): Observable<Matricula> {
+    return this._http
+      .post<Matricula>(this._backendUrl, matricula, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .pipe(
         tap((matricula) => {
-          const index = this.matriculas.findIndex((m) => m.id === id);
-          this.matriculas[index] = matricula;
+          this.matriculas.update((state) => [...state, matricula]);
+        }),
+      );
+  }
+
+  public update(
+    id: number,
+    matricula: Partial<Matricula>,
+  ): Observable<Matricula> {
+    return this._http
+      .put<Matricula>(`${this._backendUrl}/${id}`, matricula, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      })
+      .pipe(
+        tap((matricula) => {
+          const index = this.matriculas().findIndex((m) => m.id === id);
+          this.matriculas.update((state) => {
+            state[index] = matricula;
+            return state;
+          });
         }),
       );
   }
 
   public delete(id: number): Observable<void> {
-    return this.http
-      .delete<void>(`${this.backendUrl}/${id}`, {
+    return this._http
+      .delete<void>(`${this._backendUrl}/${id}`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .pipe(
         tap(() => {
-          const index = this.matriculas.findIndex((m) => m.id === id);
-          this.matriculas.splice(index, 1);
+          const index = this.matriculas().findIndex((m) => m.id === id);
+          this.matriculas.update((state) => {
+            state.splice(index, 1);
+            return state;
+          });
         }),
       );
   }

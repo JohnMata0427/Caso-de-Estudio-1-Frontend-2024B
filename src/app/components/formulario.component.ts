@@ -1,20 +1,19 @@
-import { Estudiante } from '@/interfaces/estudiante.interface';
-import { Materia } from '@/interfaces/materias.interface';
-import { Matricula } from '@/interfaces/matricula.interface';
 import { TitleCasePipe } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   ElementRef,
   input,
   model,
+  signal,
   viewChild,
 } from '@angular/core';
 import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from './button.component';
 import { ToastComponent } from './toast.component';
 
-type FormData = Materia | Estudiante | Matricula;
 export type FormTitle = 'estudiantes' | 'materias' | 'matriculas';
 type FormAction = 'registrar' | 'actualizar';
 
@@ -26,6 +25,7 @@ type FormAction = 'registrar' | 'actualizar';
     ReactiveFormsModule,
     ToastComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <dialog
       #modal
@@ -35,15 +35,15 @@ type FormAction = 'registrar' | 'actualizar';
         Formulario de {{ title() | titlecase }} 🏫
       </h3>
       <form class="grid grid-cols-2 gap-x-4 gap-y-3 mt-4" [formGroup]="form()">
-        @for (key of keys; track $index) {
+        @for (key of keysForm(); track $index) {
           <label class="flex flex-col gap-y-1">
             <span class="font-semibold text-sm text-start">
-              {{ (key.replace('_', ' ') | titlecase).replace('Id', 'ID') }}
+              {{ key.replace('_', ' ') | titlecase }}
             </span>
             <input
               class="rounded-lg border border-stone-300 dark:border-stone-700 dark:bg-stone-800 p-1 text-sm"
               required
-              [type]="formKeys[title()][key]"
+              [type]="inputTypes[title()][key]"
               [placeholder]="'Ingresar ' + key.replace('_', ' ')"
               [formControlName]="key"
             />
@@ -57,18 +57,20 @@ type FormAction = 'registrar' | 'actualizar';
             Cancelar
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              class="stroke-white size-5 stroke-2"
-              viewBox="0 0 24 24"
+              class="fill-stone-100 size-5"
+              viewBox="0 -960 960 960"
             >
-              <path d="M6 18 18 6M6 6l12 12" />
+              <path
+                d="m291-208-83-83 189-189-189-189 83-83 189 189 189-189 83 83-189 189 189 189-83 83-189-189z"
+              />
             </svg>
           </button>
           <button-component
             moreStyles="py-1 px-2 text-sm flex gap-x-1"
-            [disabled]="loading"
+            [disabled]="loading()"
             (click)="submit()"
           >
-            {{ this.action() | titlecase }}
+            {{ action() | titlecase }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
@@ -81,23 +83,21 @@ type FormAction = 'registrar' | 'actualizar';
           </button-component>
         </footer>
       </form>
-      <toast-component type="error" [(message)]="error" />
+      <toast-component
+        [success]="false"
+        [message]="response()"
+        [(opened)]="openErrorToast"
+      />
     </dialog>
-    <toast-component type="success" [(message)]="response" />
+    <toast-component
+      [success]="true"
+      [message]="response()"
+      [(opened)]="openSuccessToast"
+    />
   `,
 })
 export class FormularioComponent {
-  public readonly title = input.required<FormTitle>();
-  public readonly action = input<FormAction>('registrar');
-  public opened = model<boolean>(false);
-  public modal = viewChild<ElementRef<HTMLDialogElement>>('modal');
-  public form = model.required<FormGroup>();
-  public id = input<number>();
-  public service = input<any>();
-  public response: string = '';
-  public error: string = '';
-  public loading: boolean = false;
-  public formKeys: Record<FormTitle, Record<string, string>> = {
+  public readonly inputTypes: Record<FormTitle, Record<string, string>> = {
     estudiantes: {
       nombre: 'text',
       apellido: 'text',
@@ -121,6 +121,18 @@ export class FormularioComponent {
       id_materia: 'number',
     },
   };
+  public readonly modal = viewChild<ElementRef<HTMLDialogElement>>('modal');
+  public readonly title = input.required<FormTitle>();
+  public readonly action = input.required<FormAction>();
+  public readonly form = input.required<FormGroup>();
+  public readonly service = input.required<any>();
+  public readonly id = input<number>();
+  public readonly opened = model.required<boolean>();
+  public readonly openSuccessToast = signal<boolean>(false);
+  public readonly openErrorToast = signal<boolean>(false);
+  public readonly response = signal<string>('');
+  public readonly loading = signal<boolean>(false);
+  public readonly keysForm = computed<string[]>(() => Object.keys(this.inputTypes[this.title()]));
 
   constructor() {
     effect(() => {
@@ -129,45 +141,44 @@ export class FormularioComponent {
     });
   }
 
-  public get keys(): (keyof FormData)[] {
-    return Object.keys(this.formKeys[this.title()]) as (keyof FormData)[];
-  }
-
   public submit(): void {
     if (!this.form()?.valid) {
-      this.error = 'Por favor, rellene todos los campos';
+      this.response.set('Por favor, rellene todos los campos');
       return;
     }
 
-    this.loading = true;
+    this.loading.set(true);
+
     if (this.action() === 'registrar') {
       this.service()
         ?.create(this.form()?.value)
         .subscribe({
           next: () => {
-            this.response = 'El registro se ha guardado correctamente';
-            this.form()?.reset();
-            this.opened.set(false);
+            this.response.set('El registro se ha guardado correctamente');
+            this.openSuccessToast.set(true);
+            this.closeAndDeleteData();
           },
           error: ({ error }: { error: any }) => {
-            this.error = error.response;
+            this.response.set(error.response);
+            this.openErrorToast.set(true);
           },
         })
-        .add(() => (this.loading = false));
+        .add(() => this.loading.set(false));
     } else {
       this.service()
         ?.update(this.id(), this.form()?.value)
         .subscribe({
           next: () => {
-            this.response = 'El registro se ha actualizado correctamente';
-            this.form()?.reset();
-            this.opened.set(false);
+            this.response.set('El registro se ha actualizado correctamente');
+            this.openSuccessToast.set(true);
+            this.closeAndDeleteData();
           },
           error: ({ error }: { error: any }) => {
-            this.error = error.response;
+            this.response.set(error.response);
+            this.openErrorToast.set(true);
           },
         })
-        .add(() => (this.loading = false));
+        .add(() => this.loading.set(false));
     }
   }
 
