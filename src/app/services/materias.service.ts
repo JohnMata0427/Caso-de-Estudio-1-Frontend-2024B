@@ -1,9 +1,14 @@
 import { environment } from '@/environments/environment';
 import { Materia } from '@/interfaces/materias.interface';
+import { Matricula } from '@/interfaces/matricula.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, tap } from 'rxjs';
 
+interface ResponseMateriaById {
+  materia: Materia;
+  matriculas: Matricula[];
+}
 @Injectable({
   providedIn: 'root',
 })
@@ -26,8 +31,8 @@ export class MateriasService {
       .pipe(tap((materias) => this.materias.set(materias)));
   }
 
-  public getById(id: number): Observable<Materia> {
-    return this._http.get<Materia>(`${this._backendUrl}/${id}`, {
+  public getById(id: number): Observable<ResponseMateriaById> {
+    return this._http.get<ResponseMateriaById>(`${this._backendUrl}/${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('token')}`,
       },

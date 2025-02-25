@@ -129,7 +129,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
               {{ user().email }}
             </small>
             <p class="text-xs mt-1">
-              <span class="text-green-500">•</span>
+              <span class="text-emerald-500">•</span>
               En linea
             </p>
           }

@@ -18,7 +18,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <admin-layout class="flex flex-col min-h-dvh">
-    <aside class="flex gap-x-2 items-center font-medium text-sm">
+      <aside class="flex gap-x-2 items-center font-medium text-sm">
         <!-- Dashboard Icon -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -47,7 +47,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
           Crear matricula
         </button-component>
         <formulario-component
-          action="registrar"
+          action="Registrar"
           title="matriculas"
           [form]="form"
           [service]="matriculasService"
@@ -56,7 +56,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
       </div>
       <table-component
         title="matriculas"
-        [(data)]="matriculas"
+        [data]="matriculas()"
         [loading]="loading()"
         [service]="matriculasService"
         [form]="form"
@@ -67,7 +67,10 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 export class MatriculasAdminPage {
   public form = new FormGroup({
     codigo: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    descripcion: new FormControl('', [Validators.required, Validators.minLength(10)]),
+    descripcion: new FormControl('', [
+      Validators.required,
+      Validators.minLength(10),
+    ]),
     id_estudiante: new FormControl(1, [Validators.required, Validators.min(1)]),
     id_materia: new FormControl(1, [Validators.required, Validators.min(1)]),
   });

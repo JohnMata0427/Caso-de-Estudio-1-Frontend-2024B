@@ -15,7 +15,7 @@ import { ButtonComponent } from './button.component';
 import { ToastComponent } from './toast.component';
 
 export type FormTitle = 'estudiantes' | 'materias' | 'matriculas';
-type FormAction = 'registrar' | 'actualizar';
+type FormAction = 'Registrar' | 'Actualizar';
 
 @Component({
   selector: 'formulario-component',
@@ -70,7 +70,7 @@ type FormAction = 'registrar' | 'actualizar';
             [disabled]="loading()"
             (click)="submit()"
           >
-            {{ action() | titlecase }}
+            {{ action() }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
@@ -149,7 +149,7 @@ export class FormularioComponent {
 
     this.loading.set(true);
 
-    if (this.action() === 'registrar') {
+    if (this.action() === 'Registrar') {
       this.service()
         ?.create(this.form()?.value)
         .subscribe({

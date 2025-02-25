@@ -47,7 +47,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
           Crear materia
         </button-component>
         <formulario-component
-          action="registrar"
+          action="Registrar"
           title="materias"
           [form]="form"
           [service]="materiasService"

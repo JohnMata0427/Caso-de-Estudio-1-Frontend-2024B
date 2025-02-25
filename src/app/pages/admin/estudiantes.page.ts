@@ -47,7 +47,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
           Crear estudiante
         </button-component>
         <formulario-component
-          action="registrar"
+          action="Registrar"
           title="estudiantes"
           [form]="form"
           [service]="estudiantesService"

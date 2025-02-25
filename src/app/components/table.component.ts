@@ -6,9 +6,9 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
+  effect,
   inject,
   input,
-  model,
   signal,
 } from '@angular/core';
 import { FormGroup, FormsModule } from '@angular/forms';
@@ -73,7 +73,7 @@ type TableData = Materia | Estudiante | Matricula;
           </p>
         </div>
       } @else {
-        <div class="relative overflow-x-auto">
+        <div class="overflow-x-auto">
           <table
             class="border-y border-stone-300 dark:border-stone-700 text-sm w-full"
           >
@@ -83,25 +83,25 @@ type TableData = Materia | Estudiante | Matricula;
             <thead class="bg-stone-200 dark:bg-stone-800">
               <tr>
                 @for (key of keys(); track $index) {
-                  <th class="p-1 text-start text-nowrap">
+                  <th class="p-1 text-start whitespace-nowrap">
                     {{
                       (key.replace('_', ' ') | titlecase).replace('Id', 'ID')
                     }}
                   </th>
                 }
-                <th class="p-1 text-nowrap">Acciones</th>
+                <th class="p-1">Acciones</th>
               </tr>
             </thead>
             <tbody>
               @for (item of filteredData(); track $index) {
                 <tr>
                   @for (key of keys(); track $index) {
-                    <td class="p-1 text-nowrap">
+                    <td class="p-1 whitespace-nowrap">
                       {{ item[key] }}
                     </td>
                   }
                   <td
-                    class="p-1 text-nowrap flex justify-center items-center gap-x-2 *:border *:border-stone-300 *:dark:border-stone-700 *:rounded-sm *:hover:bg-stone-200 *:transition-colors *:dark:hover:bg-stone-800 *:duration-300"
+                    class="p-1 flex justify-center items-center gap-x-2 *:border *:border-stone-300 *:dark:border-stone-700 *:rounded-sm *:hover:bg-stone-200 *:transition-colors *:dark:hover:bg-stone-800 *:duration-300"
                   >
                     <button
                       (click)="router.navigate(['/admin', title(), item.id])"
@@ -149,14 +149,16 @@ type TableData = Materia | Estudiante | Matricula;
             </tbody>
           </table>
         </div>
-        <formulario-component
-          action="actualizar"
-          [title]="title()"
-          [id]="idForm()"
-          [form]="form()"
-          [service]="service()"
-          [(opened)]="openForm"
-        />
+        @if (editable()) {
+          <formulario-component
+            action="Actualizar"
+            [title]="title()"
+            [id]="idForm()"
+            [form]="form()"
+            [service]="service()"
+            [(opened)]="openForm"
+          />
+        }
       }
     }
   `,
@@ -167,8 +169,8 @@ export class TableComponent {
   public readonly loading = input.required<boolean>();
   public readonly service = input<any>();
   public readonly editable = input<boolean>(true);
-  public readonly form = model<FormGroup>(new FormGroup({}));
-  public readonly data = model.required<TableData[]>();
+  public readonly form = input<FormGroup>(new FormGroup({}));
+  public readonly data = input.required<TableData[]>();
   public readonly search = signal<string>('');
   public readonly idForm = signal<number>(0);
   public readonly openForm = signal<boolean>(false);
@@ -183,6 +185,13 @@ export class TableComponent {
         ),
       ) ?? [],
   );
+
+  constructor() {
+    effect(() => {
+      const data = this.data();
+      console.log(data);
+    })
+  }
 
   public deleteItem(id: number) {
     if (confirm('¿Está seguro de eliminar este registro?'))
