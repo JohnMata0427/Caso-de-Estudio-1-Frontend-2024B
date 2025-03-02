@@ -8,8 +8,7 @@ export const AuthGuard: CanActivateFn = () => {
 };
 
 export const NoAuthGuard: CanActivateFn = () => {
-  if (isAuthenticated())
-    return inject(Router).createUrlTree(['/admin']);
+  if (isAuthenticated()) return inject(Router).createUrlTree(['/admin']);
 
   return true;
 };

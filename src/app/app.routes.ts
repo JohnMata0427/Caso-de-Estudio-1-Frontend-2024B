@@ -4,9 +4,9 @@ import { EstudiantesByIdAdminPage } from './pages/admin/estudiantes-by-id.page';
 import { EstudiantesAdminPage } from './pages/admin/estudiantes.page';
 import { MateriasByIdAdminPage } from './pages/admin/materias-by-id.page';
 import { MateriasAdminPage } from './pages/admin/materias.page';
+import { MatriculasByIdAdminPage } from './pages/admin/matriculas-by-id.page';
 import { MatriculasAdminPage } from './pages/admin/matriculas.page';
 import { LoginPage } from './pages/auth/login.page';
-import { MatriculasByIdAdminPage } from './pages/admin/matriculas-by-id.page';
 
 export const routes: Routes = [
   {

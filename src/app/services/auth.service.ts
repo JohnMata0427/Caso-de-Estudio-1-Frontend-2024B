@@ -14,14 +14,14 @@ interface Response {
   providedIn: 'root',
 })
 export class AuthService {
-  #http: HttpClient = inject(HttpClient);
+  private _http: HttpClient = inject(HttpClient);
   private _backendUrl: string = environment.backendUrl;
   public usuario = signal<Partial<Usuario>>({});
 
   public login(
     usuario: Partial<Usuario>,
   ): Observable<Omit<Response, 'usuario'>> {
-    return this.#http
+    return this._http
       .post<
         Omit<Response, 'usuario'>
       >(`${this._backendUrl}/auth/login`, usuario)
@@ -32,14 +32,13 @@ export class AuthService {
     if (this.usuario().nombre)
       return of({ response: 'Usuario en caché', usuario: this.usuario() });
 
-    return this.#http.get<Omit<Response, 'token'>>(
-      `${this._backendUrl}/auth/profile`,
-      {
+    return this._http
+      .get<Omit<Response, 'token'>>(`${this._backendUrl}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
-      },
-    ).pipe(tap(({ usuario }) => this.usuario.set(usuario)));
+      })
+      .pipe(tap(({ usuario }) => this.usuario.set(usuario)));
   }
 
   public get isAuthenticated(): boolean {

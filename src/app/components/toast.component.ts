@@ -19,12 +19,10 @@ import {
         [ngClass]="{
           'bg-emerald-100 text-emerald-400 border-emerald-400 dark:bg-emerald-900':
             success(),
-          'bg-red-100 text-red-400 border-red-400 dark:bg-red-900':
-            !success(),
+          'bg-red-100 text-red-400 border-red-400 dark:bg-red-900': !success(),
           'animate-slide-in-bottom': isClosedAnimate(),
           'animate-slide-out-top': !isClosedAnimate(),
-        }"
-      >
+        }">
         {{ message() }}
       </div>
     }

@@ -7,6 +7,7 @@ import {
   ElementRef,
   input,
   model,
+  output,
   signal,
   viewChild,
 } from '@angular/core';
@@ -29,8 +30,7 @@ type FormAction = 'Registrar' | 'Actualizar';
   template: `
     <dialog
       #modal
-      class="m-auto border rounded-lg border-stone-300 p-4 bg-stone-100 dark:bg-stone-900 backdrop:backdrop-blur-xs dark:text-stone-100 text-stone-800 dark:border-stone-700 border-b-4"
-    >
+      class="m-auto border rounded-lg border-stone-300 p-4 bg-stone-100 dark:bg-stone-900 backdrop:backdrop-blur-xs dark:text-stone-100 text-stone-800 dark:border-stone-700 border-b-4">
       <h3 class="font-bold text-lg text-center">
         Formulario de {{ title() | titlecase }} 🏫
       </h3>
@@ -45,40 +45,33 @@ type FormAction = 'Registrar' | 'Actualizar';
               required
               [type]="inputTypes[title()][key]"
               [placeholder]="'Ingresar ' + key.replace('_', ' ')"
-              [formControlName]="key"
-            />
+              [formControlName]="key" />
           </label>
         }
         <footer class="col-span-2 flex justify-center gap-x-2 mt-4">
           <button
             class="bg-stone-500 hover:bg-stone-600 active:bg-stone-700 border-stone-600 hover:border-stone-700 active:border-stone-800 text-stone-100 rounded-lg transition-colors cursor-pointer font-semibold border-b-3 py-1 px-2 text-sm flex items-center gap-x-1"
-            (click)="closeAndDeleteData()"
-          >
+            (click)="closeAndDeleteData()">
             Cancelar
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="fill-stone-100 size-5"
-              viewBox="0 -960 960 960"
-            >
+              viewBox="0 -960 960 960">
               <path
-                d="m291-208-83-83 189-189-189-189 83-83 189 189 189-189 83 83-189 189 189 189-83 83-189-189z"
-              />
+                d="m291-208-83-83 189-189-189-189 83-83 189 189 189-189 83 83-189 189 189 189-83 83-189-189z" />
             </svg>
           </button>
           <button-component
             moreStyles="py-1 px-2 text-sm flex gap-x-1"
             [disabled]="loading()"
-            (click)="submit()"
-          >
+            (click)="submit()">
             {{ action() }}
             <svg
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 -960 960 960"
-              class="fill-stone-100 size-5"
-            >
+              class="fill-stone-100 size-5">
               <path
-                d="M193-212q-18 7-33-3t-16-30v-139l288-96-288-96v-139q0-19 16-29t33-4l587 235q23 9 23 33t-23 33z"
-              />
+                d="M193-212q-18 7-33-3t-16-30v-139l288-96-288-96v-139q0-19 16-29t33-4l587 235q23 9 23 33t-23 33z" />
             </svg>
           </button-component>
         </footer>
@@ -86,14 +79,12 @@ type FormAction = 'Registrar' | 'Actualizar';
       <toast-component
         [success]="false"
         [message]="response()"
-        [(opened)]="openErrorToast"
-      />
+        [(opened)]="openErrorToast" />
     </dialog>
     <toast-component
       [success]="true"
       [message]="response()"
-      [(opened)]="openSuccessToast"
-    />
+      [(opened)]="openSuccessToast" />
   `,
 })
 export class FormularioComponent {
@@ -132,7 +123,10 @@ export class FormularioComponent {
   public readonly openErrorToast = signal<boolean>(false);
   public readonly response = signal<string>('');
   public readonly loading = signal<boolean>(false);
-  public readonly keysForm = computed<string[]>(() => Object.keys(this.inputTypes[this.title()]));
+  public readonly onComplete = output<any>();
+  public readonly keysForm = computed<string[]>(() =>
+    Object.keys(this.inputTypes[this.title()]),
+  );
 
   constructor() {
     effect(() => {
@@ -153,10 +147,11 @@ export class FormularioComponent {
       this.service()
         ?.create(this.form()?.value)
         .subscribe({
-          next: () => {
+          next: (newItem: any) => {
             this.response.set('El registro se ha guardado correctamente');
             this.openSuccessToast.set(true);
             this.closeAndDeleteData();
+            this.onComplete.emit(newItem);
           },
           error: ({ error }: { error: any }) => {
             this.response.set(error.response);
@@ -168,10 +163,11 @@ export class FormularioComponent {
       this.service()
         ?.update(this.id(), this.form()?.value)
         .subscribe({
-          next: () => {
+          next: (updatedItem: any) => {
             this.response.set('El registro se ha actualizado correctamente');
             this.openSuccessToast.set(true);
             this.closeAndDeleteData();
+            this.onComplete.emit(updatedItem);
           },
           error: ({ error }: { error: any }) => {
             this.response.set(error.response);
