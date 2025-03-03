@@ -9,6 +9,7 @@ import {
   inject,
   input,
   model,
+  output,
   signal,
 } from '@angular/core';
 import { FormGroup, FormsModule } from '@angular/forms';
@@ -149,6 +150,7 @@ type TableData = Materia | Estudiante | Matricula;
 })
 export class TableComponent {
   public readonly router = inject(Router);
+  public readonly onDelete = output<number>();
   public readonly title = input.required<FormTitle>();
   public readonly loading = input.required<boolean>();
   public readonly service = input<any>();
@@ -175,8 +177,7 @@ export class TableComponent {
       this.service()
         .delete(id)
         .subscribe({
-          next: () =>
-            this.data.update((data) => data.filter((item) => item.id !== id)),
+          next: () => this.onDelete.emit(id),
         });
     }
   }

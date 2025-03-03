@@ -56,26 +56,21 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         [data]="estudiantesResource.value() ?? []"
         [loading]="estudiantesResource.isLoading()"
         [form]="form"
-        [service]="estudiantesService" />
+        [service]="estudiantesService"
+        (onDelete)="onDelete($event)" />
     </admin-layout>
   `,
 })
 export class EstudiantesAdminPage {
   public form = new FormGroup({
-    nombre: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    apellido: new FormControl('', [
-      Validators.required,
-      Validators.minLength(3),
-    ]),
+    nombre: new FormControl('', Validators.required),
+    apellido: new FormControl('', Validators.required),
     cedula: new FormControl('', Validators.required),
     fecha_nacimiento: new FormControl('', Validators.required),
-    ciudad: new FormControl('', [Validators.required, Validators.minLength(3)]),
-    direccion: new FormControl('', [
-      Validators.required,
-      Validators.minLength(3),
-    ]),
+    ciudad: new FormControl('', Validators.required),
+    direccion: new FormControl('', Validators.required),
     telefono: new FormControl('', Validators.required),
-    email: new FormControl('', [Validators.required, Validators.email]),
+    email: new FormControl('', Validators.required),
   });
   protected estudiantesService: EstudiantesService = inject(EstudiantesService);
   public openForm = signal<boolean>(false);
@@ -85,5 +80,11 @@ export class EstudiantesAdminPage {
 
   public onCreate(data: Estudiante) {
     this.estudiantesResource.update((estudiantes) => [...estudiantes!, data]);
+  }
+
+  public onDelete(id: number) {
+    this.estudiantesResource.update((estudiantes) =>
+      estudiantes?.filter((estudiante) => estudiante.id !== id),
+    );
   }
 }

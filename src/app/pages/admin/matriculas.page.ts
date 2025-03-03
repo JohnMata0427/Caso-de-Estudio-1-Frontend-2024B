@@ -55,19 +55,17 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         [data]="matriculasResource.value() ?? []"
         [loading]="matriculasResource.isLoading()"
         [service]="matriculasService"
-        [form]="form" />
+        [form]="form"
+        (onDelete)="onDelete($event)" />
     </admin-layout>
   `,
 })
 export class MatriculasAdminPage {
   public form = new FormGroup({
-    codigo: new FormControl('', [Validators.required, Validators.minLength(6)]),
-    descripcion: new FormControl('', [
-      Validators.required,
-      Validators.minLength(10),
-    ]),
-    id_estudiante: new FormControl(1, [Validators.required, Validators.min(1)]),
-    id_materia: new FormControl(1, [Validators.required, Validators.min(1)]),
+    codigo: new FormControl('', Validators.required),
+    descripcion: new FormControl('', Validators.required),
+    id_estudiante: new FormControl(1, Validators.required),
+    id_materia: new FormControl(1, Validators.required),
   });
   protected matriculasService: MatriculasService = inject(MatriculasService);
   public openForm = signal<boolean>(false);
@@ -78,5 +76,11 @@ export class MatriculasAdminPage {
 
   public onCreate(data: Matricula) {
     this.matriculasResource.update((matriculas) => [...matriculas!, data]);
+  }
+
+  public onDelete(id: number) {
+    this.matriculasResource.update((matriculas) =>
+      matriculas?.filter((matricula) => matricula.id !== id),
+    );
   }
 }
