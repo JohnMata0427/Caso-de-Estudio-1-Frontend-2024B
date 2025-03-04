@@ -15,12 +15,12 @@ interface ResponseEstudianteById {
 })
 export class EstudiantesService {
   private _http: HttpClient = inject(HttpClient);
-  private _backendUrl = signal<string>(`${environment.backendUrl}/estudiantes`);
+  private _backendUrl = signal<string>(`${environment.backendUrl}/estudiantes`).asReadonly();
   private _headers = signal({
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
-  });
+  }).asReadonly();
 
   public getAll(): Observable<Estudiante[]> {
     return this._http.get<Estudiante[]>(this._backendUrl(), this._headers());

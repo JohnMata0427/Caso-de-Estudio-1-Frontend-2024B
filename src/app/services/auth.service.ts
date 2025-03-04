@@ -15,7 +15,7 @@ interface Response {
 })
 export class AuthService {
   private _http: HttpClient = inject(HttpClient);
-  private _backendUrl: string = environment.backendUrl;
+  private _backendUrl = signal<string>(environment.backendUrl).asReadonly();
   public usuario = signal<Partial<Usuario>>({});
 
   public login(
@@ -24,7 +24,7 @@ export class AuthService {
     return this._http
       .post<
         Omit<Response, 'usuario'>
-      >(`${this._backendUrl}/auth/login`, usuario)
+      >(`${this._backendUrl()}/auth/login`, usuario)
       .pipe(tap(({ token }) => localStorage.setItem('token', token)));
   }
 
@@ -33,18 +33,11 @@ export class AuthService {
       return of({ response: 'Usuario en caché', usuario: this.usuario() });
 
     return this._http
-      .get<Omit<Response, 'token'>>(`${this._backendUrl}/auth/profile`, {
+      .get<Omit<Response, 'token'>>(`${this._backendUrl()}/auth/profile`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
       .pipe(tap(({ usuario }) => this.usuario.set(usuario)));
-  }
-
-  public get isAuthenticated(): boolean {
-    const token = localStorage.getItem('token');
-    if (!token) return false;
-
-    return Date.now() < JSON.parse(atob(token.split('.')[1])).exp * 1000;
   }
 }

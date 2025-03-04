@@ -1,6 +1,14 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 
+function isAuthenticated() {
+  const token = localStorage.getItem('token');
+  if (!token) return false;
+
+  const decodedToken = JSON.parse(atob(token.split('.')[1]));
+  return Date.now() < decodedToken.exp * 1000;
+}
+
 export const AuthGuard: CanActivateFn = () => {
   if (isAuthenticated()) return true;
 
@@ -12,11 +20,3 @@ export const NoAuthGuard: CanActivateFn = () => {
 
   return true;
 };
-
-function isAuthenticated() {
-  const token = localStorage.getItem('token');
-  if (!token) return false;
-
-  const decodedToken = JSON.parse(atob(token.split('.')[1]));
-  return Date.now() < decodedToken.exp * 1000;
-}

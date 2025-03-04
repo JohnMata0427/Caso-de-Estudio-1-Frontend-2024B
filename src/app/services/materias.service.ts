@@ -14,12 +14,12 @@ interface ResponseMateriaById {
 })
 export class MateriasService {
   private _http: HttpClient = inject(HttpClient);
-  private _backendUrl = signal<string>(`${environment.backendUrl}/materias`);
+  private _backendUrl = signal<string>(`${environment.backendUrl}/materias`).asReadonly();
   private _headers = signal({
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,
     },
-  });
+  }).asReadonly();
 
   public getAll(): Observable<Materia[]> {
     return this._http.get<Materia[]>(this._backendUrl(), this._headers());

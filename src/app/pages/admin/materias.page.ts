@@ -24,21 +24,25 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="size-7 fill-stone-800 dark:fill-stone-100"
-          viewBox="0 -960 960 960">
+          viewBox="0 -960 960 960"
+        >
           <path
-            d="M528-624v-192h288v192zM144-432v-384h288v384zm384 288v-384h288v384zm-384 0v-192h288v192z" />
+            d="M528-624v-192h288v192zM144-432v-384h288v384zm384 288v-384h288v384zm-384 0v-192h288v192z"
+          />
         </svg>
         <span>Dashboard de Materias</span>
       </aside>
       <div class="flex">
         <button-component
           moreStyles="py-1 px-2 text-sm flex gap-x-1"
-          (click)="openForm.set(true)">
+          (click)="openForm.set(true)"
+        >
           <!-- Create Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="fill-stone-100 size-5"
-            viewBox="0 -960 960 960">
+            viewBox="0 -960 960 960"
+          >
             <path d="M421-421H206v-118h215v-215h118v215h215v118H539v215H421z" />
           </svg>
           Crear materia
@@ -49,7 +53,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
           [form]="form"
           [service]="materiasService"
           [(opened)]="openForm"
-          (onComplete)="onCreate($event)" />
+          (onComplete)="onCreate($event)"
+        />
       </div>
       <table-component
         title="materias"
@@ -57,7 +62,8 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         [loading]="materiasResource.isLoading()"
         [form]="form"
         [service]="materiasService"
-        (onDelete)="onDelete($event)" />
+        (onDelete)="onDelete($event)"
+      />
     </admin-layout>
   `,
 })
