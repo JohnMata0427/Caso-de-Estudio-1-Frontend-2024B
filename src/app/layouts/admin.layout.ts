@@ -1,3 +1,4 @@
+import { NAVIGATION_ROUTES } from '@/constants/navigation.constant';
 import { AuthService } from '@/services/auth.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { NgClass, NgOptimizedImage, TitleCasePipe } from '@angular/common';
@@ -11,8 +12,6 @@ import {
 import { rxResource } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-
-type Route = { path: string; icon: string; iconFilled: string };
 
 @Component({
   selector: 'admin-layout',
@@ -179,38 +178,19 @@ type Route = { path: string; icon: string; iconFilled: string };
   `,
 })
 export class AdminLayout {
-  public readonly routes = signal<Route[]>([
-    {
-      path: 'estudiantes',
-      icon: 'M480-144 216-276v-240L48-600l432-216 432 216v312h-72v-276l-96 48v240zm0-321 271-135-271-135-271 135zm0 240 192-96v-159l-192 96-192-96v159zm0-159',
-      iconFilled:
-        'M840-288v-276L480-384 48-600l432-216 432 216v312zM480-144 216-276v-159l264 132 264-132v159z',
-    },
-    {
-      path: 'materias',
-      icon: 'M324-96q-55 0-93-39-39-38-39-93v-504q0-55 39-93 38-39 93-39h444v575q-25 0-42 18t-18 43q0 26 18 44 17 17 42 17v71zm-60-250q14-7 29-10t31-4h12v-432h-12q-25 0-42 18t-18 42zm144-14h288v-432H408zm-144 14v-446zm60 178h326q-7-14-10-28t-4-31q0-17 4-32t11-29H324q-26 0-43 18t-17 42q0 26 17 43t43 17',
-      iconFilled:
-        'M324-96q-55 0-93-39-39-38-39-93v-504q0-55 39-93 38-39 93-39h444v575q-25 0-42 18t-18 43q0 26 18 44 17 17 42 17v71zm12-264h72v-432h-72zm-12 192h326q-7-14-10-28t-4-31q0-17 4-32t11-29H324q-26 0-43 18t-17 42q0 26 17 43t43 17',
-    },
-    {
-      path: 'matriculas',
-      icon: 'M528-432h216v-72H528zm0-120h216v-72H528zM192-336h288v-45q0-29-44-52t-100-23q-57 0-100 23t-44 52zm144-144q30 0 51-21t21-51-21-51-51-21-51 21-21 51 21 51 51 21M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21zm0-72h624v-432H168zm0 0v-432z',
-      iconFilled:
-        'M528-432h216v-72H528zm0-120h216v-72H528zM192-336h288v-45q0-29-44-52t-100-23q-57 0-100 23t-44 52zm144-144q30 0 51-21t21-51-21-51-51-21-51 21-21 51 21 51 51 21M168-192q-30 0-51-21t-21-51v-432q0-30 21-51t51-21h624q30 0 51 21t21 51v432q0 30-21 51t-51 21z',
-    },
-  ]).asReadonly();
   private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly authService: AuthService = inject(AuthService);
   private readonly title: Title = inject(Title);
   private readonly breakpointObserver: BreakpointObserver =
     inject(BreakpointObserver);
-  public readonly showNav = signal<boolean>(true);
-  public readonly isDarkMode = signal<boolean>(
-    localStorage.getItem('theme') === 'dark',
-  );
+  public readonly routes = signal(NAVIGATION_ROUTES).asReadonly();
   public readonly activedUrl = computed<string>(
     () => this.activatedRoute.snapshot.url[0].path,
   );
+  public readonly isDarkMode = signal<boolean>(
+    localStorage.getItem('theme') === 'dark',
+  );
+  public readonly showNav = signal<boolean>(true);
   public readonly userResource = rxResource({
     loader: () => this.authService.profile(),
   });
@@ -226,7 +206,7 @@ export class AdminLayout {
     });
   }
 
-  public toggleNav = (): void => this.showNav.update((state) => !state);
+  public toggleNav = (): void => this.showNav.update(state => !state);
 
   public logout(): void {
     localStorage.removeItem('token');
@@ -234,7 +214,7 @@ export class AdminLayout {
   }
 
   public toggleDarkMode(): void {
-    this.isDarkMode.update((state) => !state);
+    this.isDarkMode.update(state => !state);
     localStorage.setItem('theme', this.isDarkMode() ? 'dark' : 'light');
     document.body.classList.toggle('dark', this.isDarkMode());
   }

@@ -50,7 +50,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         <formulario-component
           action="Registrar"
           title="estudiantes"
-          [form]="form"
+          [form]="form()"
           [service]="estudiantesService"
           [(opened)]="openForm"
           (onComplete)="onCreate($event)"
@@ -60,7 +60,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         title="estudiantes"
         [data]="estudiantesResource.value() ?? []"
         [loading]="estudiantesResource.isLoading()"
-        [form]="form"
+        [form]="form()"
         [service]="estudiantesService"
         (onDelete)="onDelete($event)"
       />
@@ -68,29 +68,31 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   `,
 })
 export class EstudiantesAdminPage {
-  public form = new FormGroup({
-    nombre: new FormControl('', Validators.required),
-    apellido: new FormControl('', Validators.required),
-    cedula: new FormControl('', Validators.required),
-    fecha_nacimiento: new FormControl('', Validators.required),
-    ciudad: new FormControl('', Validators.required),
-    direccion: new FormControl('', Validators.required),
-    telefono: new FormControl('', Validators.required),
-    email: new FormControl('', Validators.required),
-  });
   protected estudiantesService: EstudiantesService = inject(EstudiantesService);
+  public form = signal<FormGroup>(
+    new FormGroup({
+      nombre: new FormControl<string>('', Validators.required),
+      apellido: new FormControl<string>('', Validators.required),
+      cedula: new FormControl<string>('', Validators.required),
+      fecha_nacimiento: new FormControl<string>('', Validators.required),
+      ciudad: new FormControl<string>('', Validators.required),
+      direccion: new FormControl<string>('', Validators.required),
+      telefono: new FormControl<string>('', Validators.required),
+      email: new FormControl<string>('', Validators.required),
+    }),
+  ).asReadonly();
   public openForm = signal<boolean>(false);
   public estudiantesResource = rxResource({
     loader: () => this.estudiantesService.getAll(),
   });
 
   public onCreate(data: Estudiante) {
-    this.estudiantesResource.update((estudiantes) => [...estudiantes!, data]);
+    this.estudiantesResource.update(estudiantes => [...estudiantes!, data]);
   }
 
   public onDelete(id: number) {
-    this.estudiantesResource.update((estudiantes) =>
-      estudiantes?.filter((estudiante) => estudiante.id !== id),
+    this.estudiantesResource.update(estudiantes =>
+      estudiantes?.filter(estudiante => estudiante.id !== id),
     );
   }
 }

@@ -14,7 +14,9 @@ interface ResponseMateriaById {
 })
 export class MateriasService {
   private _http: HttpClient = inject(HttpClient);
-  private _backendUrl = signal<string>(`${environment.backendUrl}/materias`).asReadonly();
+  private _backendUrl = signal<string>(
+    `${environment.backendUrl}/materias`,
+  ).asReadonly();
   private _headers = signal({
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,

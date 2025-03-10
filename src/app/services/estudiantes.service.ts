@@ -15,7 +15,9 @@ interface ResponseEstudianteById {
 })
 export class EstudiantesService {
   private _http: HttpClient = inject(HttpClient);
-  private _backendUrl = signal<string>(`${environment.backendUrl}/estudiantes`).asReadonly();
+  private _backendUrl = signal<string>(
+    `${environment.backendUrl}/estudiantes`,
+  ).asReadonly();
   private _headers = signal({
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,

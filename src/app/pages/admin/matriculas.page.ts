@@ -50,7 +50,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         <formulario-component
           action="Registrar"
           title="matriculas"
-          [form]="form"
+          [form]="form()"
           [service]="matriculasService"
           [(opened)]="openForm"
         />
@@ -60,20 +60,22 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         [data]="matriculasResource.value() ?? []"
         [loading]="matriculasResource.isLoading()"
         [service]="matriculasService"
-        [form]="form"
+        [form]="form()"
         (onDelete)="onDelete($event)"
       />
     </admin-layout>
   `,
 })
 export class MatriculasAdminPage {
-  public form = new FormGroup({
-    codigo: new FormControl('', Validators.required),
-    descripcion: new FormControl('', Validators.required),
-    id_estudiante: new FormControl(1, Validators.required),
-    id_materia: new FormControl(1, Validators.required),
-  });
   protected matriculasService: MatriculasService = inject(MatriculasService);
+  public form = signal<FormGroup>(
+    new FormGroup({
+      codigo: new FormControl<string>('', Validators.required),
+      descripcion: new FormControl<string>('', Validators.required),
+      id_estudiante: new FormControl<number | null>(null, Validators.required),
+      id_materia: new FormControl<number | null>(null, Validators.required),
+    }),
+  ).asReadonly();
   public openForm = signal<boolean>(false);
   public loading = signal<boolean>(true);
   public matriculasResource = rxResource({
@@ -81,12 +83,12 @@ export class MatriculasAdminPage {
   });
 
   public onCreate(data: Matricula) {
-    this.matriculasResource.update((matriculas) => [...matriculas!, data]);
+    this.matriculasResource.update(matriculas => [...matriculas!, data]);
   }
 
   public onDelete(id: number) {
-    this.matriculasResource.update((matriculas) =>
-      matriculas?.filter((matricula) => matricula.id !== id),
+    this.matriculasResource.update(matriculas =>
+      matriculas?.filter(matricula => matricula.id !== id),
     );
   }
 }

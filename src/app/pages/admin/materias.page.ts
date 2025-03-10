@@ -50,7 +50,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         <formulario-component
           action="Registrar"
           title="materias"
-          [form]="form"
+          [form]="form()"
           [service]="materiasService"
           [(opened)]="openForm"
           (onComplete)="onCreate($event)"
@@ -60,7 +60,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
         title="materias"
         [data]="materiasResource.value() ?? []"
         [loading]="materiasResource.isLoading()"
-        [form]="form"
+        [form]="form()"
         [service]="materiasService"
         (onDelete)="onDelete($event)"
       />
@@ -68,25 +68,27 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
   `,
 })
 export class MateriasAdminPage {
-  public form = new FormGroup({
-    nombre: new FormControl('', Validators.required),
-    descripcion: new FormControl('', Validators.required),
-    codigo: new FormControl('', Validators.required),
-    creditos: new FormControl(1, Validators.required),
-  });
   protected materiasService: MateriasService = inject(MateriasService);
+  public form = signal<FormGroup>(
+    new FormGroup({
+      nombre: new FormControl<string>('', Validators.required),
+      descripcion: new FormControl<string>('', Validators.required),
+      codigo: new FormControl<string>('', Validators.required),
+      creditos: new FormControl<number | null>(null, Validators.required),
+    }),
+  ).asReadonly();
   public openForm = signal<boolean>(false);
   public materiasResource = rxResource({
     loader: () => this.materiasService.getAll(),
   });
 
   public onCreate(data: Materia) {
-    this.materiasResource.update((materias) => [...materias!, data]);
+    this.materiasResource.update(materias => [...materias!, data]);
   }
 
   public onDelete(id: number) {
-    this.materiasResource.update((materias) =>
-      materias?.filter((materia) => materia.id !== id),
+    this.materiasResource.update(materias =>
+      materias?.filter(materia => materia.id !== id),
     );
   }
 }

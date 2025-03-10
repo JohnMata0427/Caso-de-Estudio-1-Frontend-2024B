@@ -13,10 +13,7 @@ export class AppComponent {
   constructor() {
     const isDark = localStorage.getItem('theme') === 'dark';
     document.body.classList.toggle('dark', isDark);
-    this.setupThemeChangeListener();
-  }
 
-  private setupThemeChangeListener(): void {
     window
       .matchMedia('(prefers-color-scheme: dark)')
       .addEventListener('change', ({ matches }) => {

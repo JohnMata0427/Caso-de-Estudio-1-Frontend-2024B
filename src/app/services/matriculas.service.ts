@@ -16,7 +16,9 @@ interface ResponseMatriculaById {
 })
 export class MatriculasService {
   private _http: HttpClient = inject(HttpClient);
-  private _backendUrl = signal<string>(`${environment.backendUrl}/matriculas`).asReadonly();
+  private _backendUrl = signal<string>(
+    `${environment.backendUrl}/matriculas`,
+  ).asReadonly();
   private _headers = signal({
     headers: {
       Authorization: `Bearer ${localStorage.getItem('token')}`,

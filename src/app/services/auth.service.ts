@@ -16,7 +16,7 @@ interface Response {
 export class AuthService {
   private _http: HttpClient = inject(HttpClient);
   private _backendUrl = signal<string>(environment.backendUrl).asReadonly();
-  public usuario = signal<Partial<Usuario>>({});
+  public _usuario = signal<Partial<Usuario>>({});
 
   public login(
     usuario: Partial<Usuario>,
@@ -29,8 +29,8 @@ export class AuthService {
   }
 
   public profile(): Observable<Omit<Response, 'token'>> {
-    if (this.usuario().nombre)
-      return of({ response: 'Usuario en caché', usuario: this.usuario() });
+    if (this._usuario().nombre)
+      return of({ response: 'Usuario en caché', usuario: this._usuario() });
 
     return this._http
       .get<Omit<Response, 'token'>>(`${this._backendUrl()}/auth/profile`, {
@@ -38,6 +38,6 @@ export class AuthService {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
       })
-      .pipe(tap(({ usuario }) => this.usuario.set(usuario)));
+      .pipe(tap(({ usuario }) => this._usuario.set(usuario)));
   }
 }

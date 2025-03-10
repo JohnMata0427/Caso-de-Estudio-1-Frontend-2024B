@@ -29,7 +29,7 @@ import {
     <auth-layout>
       <form
         class="w-2/3 flex flex-col gap-y-4 py-4"
-        [formGroup]="form"
+        [formGroup]="form()"
         (ngSubmit)="onSubmit()"
       >
         <div class="flex flex-col gap-y-2">
@@ -148,37 +148,38 @@ import {
   `,
 })
 export class LoginPage {
-  public form: FormGroup = new FormGroup({
-    email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [
-      Validators.required,
-      Validators.minLength(8),
-    ]),
-  });
   private authService = inject(AuthService);
+  public form = signal<FormGroup>(
+    new FormGroup({
+      email: new FormControl('', [Validators.required, Validators.email]),
+      password: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+      ]),
+    }),
+  ).asReadonly();
   public errorMessage = signal<string[]>([]);
   public showToast = signal<boolean>(false);
   public loading = signal<boolean>(false);
   public showPassword = signal<boolean>(false);
 
   public togglePasswordVisibility = (): void =>
-    this.showPassword.update((state) => !state);
+    this.showPassword.update(state => !state);
 
   public onSubmit(): void {
-    if (this.form.valid) {
+    if (this.form().valid) {
       this.loading.set(true);
 
       this.authService
-        .login(this.form.value)
+        .login(this.form().value)
         .subscribe({
           next: () => window.location.reload(),
           error: ({ error }) => {
-            this.errorMessage.set([error?.response ?? 'Ha ocurrido un error']);
+            this.errorMessage.set([error?.response ?? 'Ha ocurrido un error inesperado']);
             this.showToast.set(true);
           },
         })
         .add(() => this.loading.set(false));
-    } else
-      this.errorMessage.set(['Todos los campos son requeridos']);
+    } else this.errorMessage.set(['Todos los campos son requeridos']);
   }
 }

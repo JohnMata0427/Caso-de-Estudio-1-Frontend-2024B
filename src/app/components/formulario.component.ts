@@ -1,3 +1,4 @@
+import { INPUT_NAMES, type SystemTitle } from '@/constants/properties.constant';
 import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
@@ -15,7 +16,6 @@ import { FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { ButtonComponent } from './button.component';
 import { ToastComponent } from './toast.component';
 
-export type FormTitle = 'estudiantes' | 'materias' | 'matriculas';
 type FormAction = 'Registrar' | 'Actualizar';
 
 @Component({
@@ -37,23 +37,27 @@ type FormAction = 'Registrar' | 'Actualizar';
       </h3>
       <form class="grid grid-cols-2 gap-x-4 gap-y-3 mt-4" [formGroup]="form()">
         @for (key of keysForm(); track $index) {
-          <label class="flex flex-col gap-y-1">
-            <span class="font-semibold text-sm text-start">
+          @let input = inputNames()[key];
+          <div class="flex flex-col gap-y-1">
+            <label class="font-semibold text-sm text-start" [htmlFor]="key">
               {{ key.replace('_', ' ') | titlecase }}
-            </span>
+              <span class="text-red-500">*</span>
+            </label>
             <input
               class="rounded-lg border border-stone-300 dark:border-stone-700 dark:bg-stone-800 p-1 text-sm"
               required
-              [type]="inputTypes()[title()][key]"
-              [placeholder]="'Ingresar ' + key.replace('_', ' ')"
+              [id]="key"
+              [name]="key"
+              [type]="input.type"
+              [placeholder]="input.placeholder"
               [formControlName]="key"
             />
-          </label>
+          </div>
         }
         <footer class="col-span-2 flex justify-center gap-x-2 mt-4">
           <button
             class="bg-stone-500 hover:bg-stone-600 active:bg-stone-700 border-stone-600 hover:border-stone-700 active:border-stone-800 text-stone-100 rounded-lg transition-colors cursor-pointer font-semibold border-b-3 py-1 px-2 text-sm flex items-center gap-x-1"
-            (click)="closeAndDeleteData()"
+            (click)="opened.set(false)"
           >
             Cancelar
             <svg
@@ -98,44 +102,21 @@ type FormAction = 'Registrar' | 'Actualizar';
   `,
 })
 export class FormularioComponent {
-  public readonly inputTypes = signal<Record<FormTitle, Record<string, string>>> ({
-    estudiantes: {
-      nombre: 'text',
-      apellido: 'text',
-      cedula: 'number',
-      fecha_nacimiento: 'date',
-      ciudad: 'text',
-      direccion: 'text',
-      telefono: 'number',
-      email: 'email',
-    },
-    materias: {
-      nombre: 'text',
-      descripcion: 'text',
-      codigo: 'text',
-      creditos: 'number',
-    },
-    matriculas: {
-      codigo: 'text',
-      descripcion: 'text',
-      id_estudiante: 'number',
-      id_materia: 'number',
-    },
-  }).asReadonly();
   public readonly modal = viewChild<ElementRef<HTMLDialogElement>>('modal');
-  public readonly onComplete = output<any>();
-  public readonly title = input.required<FormTitle>();
+  public readonly opened = model.required<boolean>();
+  public readonly title = input.required<SystemTitle>();
   public readonly action = input.required<FormAction>();
   public readonly form = input.required<FormGroup>();
   public readonly service = input.required<any>();
   public readonly id = input<number>(0);
-  public readonly opened = model.required<boolean>();
+  public readonly onComplete = output<any>();
   public readonly openSuccessToast = signal<boolean>(false);
   public readonly openErrorToast = signal<boolean>(false);
   public readonly messages = signal<string[]>([]);
   public readonly loading = signal<boolean>(false);
+  public readonly inputNames = computed(() => INPUT_NAMES[this.title()]);
   public readonly keysForm = computed<string[]>(() =>
-    Object.keys(this.inputTypes()[this.title()]),
+    Object.keys(this.inputNames()),
   );
 
   constructor() {
@@ -167,11 +148,6 @@ export class FormularioComponent {
     }
   }
 
-  public closeAndDeleteData(): void {
-    this.form().reset();
-    this.opened.set(false);
-  }
-
   private showErrors = ({ error }: { error: any }): void => {
     const { response } = error;
     const { errors = [] } = response;
@@ -180,9 +156,10 @@ export class FormularioComponent {
   };
 
   private emitSuccessItem = (response: any): void => {
+    this.form().reset();
+    this.opened.set(false);
+    this.onComplete.emit(response);
     this.messages.set(['El registro se ha guardado correctamente']);
     this.openSuccessToast.set(true);
-    this.closeAndDeleteData();
-    this.onComplete.emit(response);
   };
 }

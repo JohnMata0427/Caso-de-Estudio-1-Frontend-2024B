@@ -1,6 +1,8 @@
-import { Estudiante } from '@/interfaces/estudiante.interface';
-import { Materia } from '@/interfaces/materias.interface';
-import { Matricula } from '@/interfaces/matricula.interface';
+import {
+  COLUMN_NAMES,
+  type SystemData,
+  type SystemTitle,
+} from '@/constants/properties.constant';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -13,10 +15,8 @@ import {
 } from '@angular/core';
 import { FormGroup, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { FormTitle, FormularioComponent } from './formulario.component';
+import { FormularioComponent } from './formulario.component';
 import { ToastComponent } from './toast.component';
-
-type TableData = Materia | Estudiante | Matricula;
 
 @Component({
   selector: 'table-component',
@@ -83,7 +83,7 @@ type TableData = Materia | Estudiante | Matricula;
             </caption>
             <thead class="bg-stone-200 dark:bg-stone-800">
               <tr>
-                @for (column of columns()[title()]; track $index) {
+                @for (column of columns(); track $index) {
                   <th class="p-1 text-start whitespace-nowrap">
                     {{ column }}
                   </th>
@@ -169,49 +169,28 @@ type TableData = Materia | Estudiante | Matricula;
   `,
 })
 export class TableComponent {
-  public readonly columns = signal<Record<FormTitle, string[]>>({
-    estudiantes: [
-      'ID',
-      'Nombre',
-      'Apellido',
-      'Cedula',
-      'Fecha de Nacimiento',
-      'Ciudad',
-      'Dirección',
-      'Teléfono',
-      'Email',
-    ],
-    materias: ['ID', 'Nombre', 'Código', 'Descripción', 'Créditos'],
-    matriculas: [
-      'ID',
-      'Código',
-      'Descripción',
-      'ID del Estudiante',
-      'ID de la Materia',
-    ],
-  }).asReadonly();
   public readonly router = inject(Router);
+  public readonly data = model.required<SystemData[]>();
   public readonly onDelete = output<number>();
-  public readonly title = input.required<FormTitle>();
+  public readonly title = input.required<SystemTitle>();
   public readonly loading = input.required<boolean>();
   public readonly service = input<any>();
   public readonly editable = input<boolean>(true);
   public readonly form = input<FormGroup>(new FormGroup({}));
-  public readonly data = model.required<TableData[]>();
   public readonly search = signal<string>('');
   public readonly idForm = signal<number>(0);
   public readonly openForm = signal<boolean>(false);
   public readonly openDeleteToast = signal<boolean>(false);
-  public readonly keys = computed<(keyof TableData)[]>(
-    () => Object.keys(this.data()[0]) as (keyof TableData)[],
+  public readonly columns = computed(() => COLUMN_NAMES[this.title()]);
+  public readonly keys = computed<(keyof SystemData)[]>(
+    () => Object.keys(this.data()[0]) as (keyof SystemData)[],
   );
-  public filteredData = computed<TableData[]>(
-    () =>
-      this.data().filter((item) =>
-        Object.values(item).some((value) =>
-          value.toString().toLowerCase().includes(this.search().toLowerCase()),
-        ),
-      ) ?? [],
+  public filteredData = computed<SystemData[]>(() =>
+    this.data().filter(item =>
+      Object.values(item).some(value =>
+        value.toString().toLowerCase().includes(this.search().toLowerCase()),
+      ),
+    ),
   );
 
   public deleteItem(id: number) {
@@ -227,16 +206,16 @@ export class TableComponent {
     }
   }
 
-  public updateItem(item: TableData) {
+  public updateItem(item: SystemData) {
     const { id, ...data } = item;
     this.idForm.set(id);
-    this.form().patchValue(data);
+    this.form().setValue(data);
     this.openForm.set(true);
   }
 
-  public onUpdate(data: TableData) {
-    this.data.update((items) =>
-      items.map((item) => (item.id === data.id ? data : item)),
+  public onUpdate(data: SystemData) {
+    this.data.update(items =>
+      items.map(item => (item.id === data.id ? data : item)),
     );
   }
 }

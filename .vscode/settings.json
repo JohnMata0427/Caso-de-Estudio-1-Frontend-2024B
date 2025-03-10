@@ -1,6 +1,9 @@
 {
   "symbols.files.associations": {
     "*.page.ts": "angular-module",
-    "*.layout.ts": "angular"
+    "*.layout.ts": "angular",
+    "*.constant.ts": "angular-directive",
+    "*.interface.ts": "angular-guard",
+    "*.guard.ts": "angular-pipe"
   }
 }

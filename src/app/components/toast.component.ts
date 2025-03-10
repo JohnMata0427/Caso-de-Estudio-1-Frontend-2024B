@@ -2,6 +2,7 @@ import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
+  computed,
   effect,
   input,
   model,
@@ -25,7 +26,7 @@ import {
         }"
       >
         @for (item of messages(); track $index) {
-          <span>• {{ item }}</span>
+          <span>{{ emoji() }} {{ item }}</span>
         }
       </div>
     }
@@ -36,6 +37,7 @@ export class ToastComponent {
   public readonly messages = input.required<string[]>();
   public readonly opened = model.required<boolean>();
   public readonly isClosedAnimate = signal<boolean>(true);
+  public readonly emoji = computed(() => (this.success() ? '✅' : '⛔'));
 
   constructor() {
     effect(() => {

@@ -49,10 +49,10 @@ export default function Homepage() {
   ]);
 
   check(responses, {
-    'Login cargado exitosamente': (r) => r[0].status === 200,
-    'Estilos cargados exitosamente': (r) => r[1].status === 200,
-    'Polyfills cargados exitosamente': (r) => r[2].status === 200,
-    'Main cargado exitosamente': (r) => r[3].status === 200,
-    'Imagen de fondo cargada exitosamente': (r) => r[4].status === 200,
+    'Login cargado exitosamente': r => r[0].status === 200,
+    'Estilos cargados exitosamente': r => r[1].status === 200,
+    'Polyfills cargados exitosamente': r => r[2].status === 200,
+    'Main cargado exitosamente': r => r[3].status === 200,
+    'Imagen de fondo cargada exitosamente': r => r[4].status === 200,
   });
 }
