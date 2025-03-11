@@ -1,17 +1,24 @@
 import { TableComponent } from '@/components/table.component';
+import { BACKEND_URL, headers } from '@/environments/environment';
+import type { Estudiante } from '@/interfaces/estudiante.interface';
+import type { Materia } from '@/interfaces/materias.interface';
 import { Matricula } from '@/interfaces/matricula.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
-import { MatriculasService } from '@/services/matriculas.service';
 import { TitleCasePipe } from '@angular/common';
+import { httpResource } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
+  input,
   linkedSignal,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+
+interface ResponseMatriculaById {
+  matricula: Matricula;
+  estudiante: Estudiante;
+  materia: Materia;
+}
 
 @Component({
   selector: 'matriculas-by-id-admin-page',
@@ -50,7 +57,7 @@ import { ActivatedRoute } from '@angular/router';
               <strong class="font-bold text-indigo-500">
                 {{ key.replace('_', ' ') | titlecase }}:
               </strong>
-              <span>{{ matriculaResource.value()?.matricula?.[key] }}</span>
+              <span>{{ matriculaResource.value().matricula[key] }}</span>
             </p>
           }
         </article>
@@ -97,26 +104,24 @@ import { ActivatedRoute } from '@angular/router';
   `,
 })
 export class MatriculasByIdAdminPage {
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly matriculasService = inject(MatriculasService);
-  public readonly id = computed(
-    () => this.activatedRoute.snapshot.params['id'],
+  public readonly id = input.required<number>();
+  public readonly matriculaResource = httpResource<ResponseMatriculaById>(
+    () => ({
+      url: `${BACKEND_URL}/matriculas/${this.id()}`,
+      headers,
+    }),
+    { defaultValue: {} as ResponseMatriculaById },
   );
-  public readonly matriculaResource = rxResource({
-    request: () => this.id(),
-    loader: ({ request }) => this.matriculasService.getById(request),
-  });
+
   public readonly estudiante = linkedSignal(() => [
-    this.matriculaResource.value()?.estudiante!,
+    this.matriculaResource.value().estudiante,
   ]);
   public readonly materia = linkedSignal(() => [
-    this.matriculaResource.value()?.materia!,
+    this.matriculaResource.value().materia,
   ]);
 
   public readonly keys = computed<(keyof Matricula)[]>(() => {
-    return Object.keys(this.matriculaResource.value()?.matricula ?? {}).slice(
-      1,
-      3,
-    ) as (keyof Matricula)[];
+    const matricula = this.matriculaResource.value().matricula;
+    return Object.keys(matricula).slice(1, 3) as (keyof Matricula)[];
   });
 }

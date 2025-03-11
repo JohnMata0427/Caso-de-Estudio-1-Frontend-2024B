@@ -1,4 +1,4 @@
-import { environment } from '@/environments/environment';
+import { BACKEND_URL } from '@/environments/environment';
 import { Usuario } from '@/interfaces/usuario.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable, signal } from '@angular/core';
@@ -15,7 +15,7 @@ interface Response {
 })
 export class AuthService {
   private _http: HttpClient = inject(HttpClient);
-  private _backendUrl = signal<string>(environment.backendUrl).asReadonly();
+  private _backendUrl = signal<string>(BACKEND_URL).asReadonly();
   public _usuario = signal<Partial<Usuario>>({});
 
   public login(

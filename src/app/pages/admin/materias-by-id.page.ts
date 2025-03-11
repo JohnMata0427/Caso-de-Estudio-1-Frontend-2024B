@@ -1,16 +1,21 @@
 import { TableComponent } from '@/components/table.component';
+import { BACKEND_URL, headers } from '@/environments/environment';
 import { Materia } from '@/interfaces/materias.interface';
+import type { Matricula } from '@/interfaces/matricula.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
-import { MateriasService } from '@/services/materias.service';
 import { TitleCasePipe } from '@angular/common';
+import { httpResource } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
+  input,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+
+interface ResponseMateriaById {
+  materia: Partial<Materia>;
+  matriculas: Matricula[];
+}
 
 @Component({
   selector: 'materias-by-id-admin-page',
@@ -49,7 +54,7 @@ import { ActivatedRoute } from '@angular/router';
               <strong class="font-bold text-indigo-500">
                 {{ key.replace('_', ' ') | titlecase }}:
               </strong>
-              <span>{{ materiaResource.value()?.materia?.[key] }}</span>
+              <span>{{ materiaResource.value().materia[key] }}</span>
             </p>
           }
         </article>
@@ -69,7 +74,7 @@ import { ActivatedRoute } from '@angular/router';
         <table-component
           title="matriculas"
           [loading]="false"
-          [data]="materiaResource.value()?.matriculas ?? []"
+          [data]="materiaResource.value().matriculas"
           [editable]="false"
         />
       }
@@ -77,17 +82,17 @@ import { ActivatedRoute } from '@angular/router';
   `,
 })
 export class MateriasByIdAdminPage {
-  private readonly activatedRoute = inject(ActivatedRoute);
-  private readonly materiasService = inject(MateriasService);
-  public readonly id = computed(
-    () => this.activatedRoute.snapshot.params['id'],
+  public readonly id = input.required<number>();
+  public readonly materiaResource = httpResource<ResponseMateriaById>(
+    () => ({
+      url: `${BACKEND_URL}/materias/${this.id()}`,
+      headers,
+    }),
+    { defaultValue: { materia: {}, matriculas: [] } },
   );
-  public readonly materiaResource = rxResource({
-    request: () => this.id(),
-    loader: ({ request }) => this.materiasService.getById(request),
-  });
+
   public readonly keys = computed<(keyof Materia)[]>(() => {
-    const keys = Object.keys(this.materiaResource.value()?.materia ?? {});
+    const keys = Object.keys(this.materiaResource.value().materia);
     keys.shift();
 
     return keys as (keyof Materia)[];

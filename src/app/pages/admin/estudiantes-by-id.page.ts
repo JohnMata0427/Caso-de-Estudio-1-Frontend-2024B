@@ -1,16 +1,21 @@
 import { TableComponent } from '@/components/table.component';
+import { BACKEND_URL, headers } from '@/environments/environment';
 import { Estudiante } from '@/interfaces/estudiante.interface';
+import type { Matricula } from '@/interfaces/matricula.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
-import { EstudiantesService } from '@/services/estudiantes.service';
 import { TitleCasePipe } from '@angular/common';
+import { httpResource } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  inject,
+  input,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+
+interface ResponseEstudianteById {
+  estudiante: Partial<Estudiante>;
+  matriculas: Matricula[];
+}
 
 @Component({
   selector: 'estudiantes-by-id-admin-page',
@@ -49,7 +54,7 @@ import { ActivatedRoute } from '@angular/router';
               <strong class="font-bold text-indigo-500">
                 {{ key.replace('_', ' ') | titlecase }}:
               </strong>
-              <span>{{ estudianteResource.value()?.estudiante?.[key] }}</span>
+              <span>{{ estudianteResource.value().estudiante[key] }}</span>
             </p>
           }
         </article>
@@ -69,7 +74,7 @@ import { ActivatedRoute } from '@angular/router';
         <table-component
           title="matriculas"
           [loading]="false"
-          [data]="estudianteResource.value()?.matriculas ?? []"
+          [data]="estudianteResource.value().matriculas"
           [editable]="false"
         />
       }
@@ -77,18 +82,19 @@ import { ActivatedRoute } from '@angular/router';
   `,
 })
 export class EstudiantesByIdAdminPage {
-  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
-  private readonly estudiantesService: EstudiantesService =
-    inject(EstudiantesService);
-  public readonly id = computed<number>(
-    () => this.activatedRoute.snapshot.params['id'],
+  public readonly id = input.required<number>();
+  public readonly estudianteResource = httpResource<ResponseEstudianteById>(
+    () => ({
+      url: `${BACKEND_URL}/estudiantes/${this.id()}`,
+      headers,
+    }),
+    {
+      defaultValue: { estudiante: {}, matriculas: [] },
+    },
   );
-  public readonly estudianteResource = rxResource({
-    request: () => this.id(),
-    loader: ({ request }) => this.estudiantesService.getById(request),
-  });
+
   public readonly keys = computed<(keyof Estudiante)[]>(() => {
-    const keys = Object.keys(this.estudianteResource.value()?.estudiante ?? {});
+    const keys = Object.keys(this.estudianteResource.value().estudiante);
     keys.shift();
 
     return keys as (keyof Estudiante)[];
