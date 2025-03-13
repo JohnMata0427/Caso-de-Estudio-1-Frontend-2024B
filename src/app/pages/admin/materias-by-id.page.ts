@@ -1,7 +1,7 @@
+import type { Materia } from '@/interfaces/materias.interface';
+import type { Matricula } from '@/interfaces/matricula.interface';
 import { TableComponent } from '@/components/table.component';
 import { BACKEND_URL, headers } from '@/environments/environment';
-import { Materia } from '@/interfaces/materias.interface';
-import type { Matricula } from '@/interfaces/matricula.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
 import { TitleCasePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
@@ -48,9 +48,9 @@ interface ResponseMateriaById {
           <p class="text-sm font-medium mt-1">Cargando información...</p>
         </div>
       } @else {
-        <article>
+        <article class="text-sm">
           @for (key of keys(); track $index) {
-            <p class="text-sm">
+            <p>
               <strong class="font-bold text-indigo-500">
                 {{ key.replace('_', ' ') | titlecase }}:
               </strong>
@@ -83,6 +83,7 @@ interface ResponseMateriaById {
 })
 export class MateriasByIdAdminPage {
   public readonly id = input.required<number>();
+  
   public readonly materiaResource = httpResource<ResponseMateriaById>(
     () => ({
       url: `${BACKEND_URL}/materias/${this.id()}`,

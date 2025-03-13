@@ -149,9 +149,9 @@ export class FormularioComponent {
   }
 
   private showErrors = ({ error }: { error: any }): void => {
-    const { response } = error;
-    const { errors = [] } = response;
-    this.messages.set(errors.length > 0 ? errors : [response]);
+    const { response = 'Se ha producido un error, intente nuevamente' } = error;
+    const { errors = [response] } = response;
+    this.messages.set(errors);
     this.openErrorToast.set(true);
   };
 

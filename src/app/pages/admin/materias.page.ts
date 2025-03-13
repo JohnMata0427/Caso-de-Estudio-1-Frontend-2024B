@@ -1,16 +1,17 @@
 import { ButtonComponent } from '@/components/button.component';
 import { FormularioComponent } from '@/components/formulario.component';
 import { TableComponent } from '@/components/table.component';
+import { BACKEND_URL, headers } from '@/environments/environment';
 import { Materia } from '@/interfaces/materias.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
 import { MateriasService } from '@/services/materias.service';
+import { httpResource } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   signal,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -58,7 +59,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
       </div>
       <table-component
         title="materias"
-        [data]="materiasResource.value() ?? []"
+        [data]="materiasResource.value()"
         [loading]="materiasResource.isLoading()"
         [form]="form()"
         [service]="materiasService"
@@ -78,12 +79,18 @@ export class MateriasAdminPage {
     }),
   ).asReadonly();
   public openForm = signal<boolean>(false);
-  public materiasResource = rxResource({
-    loader: () => this.materiasService.getAll(),
-  });
+  public materiasResource = httpResource<Materia[]>(
+    () => ({
+      url: `${BACKEND_URL}/materias`,
+      headers,
+    }),
+    {
+      defaultValue: [],
+    },
+  );
 
   public onCreate(data: Materia) {
-    this.materiasResource.update(materias => [...materias!, data]);
+    this.materiasResource.update(materias => materias.concat(data));
   }
 
   public onDelete(id: number) {

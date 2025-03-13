@@ -13,8 +13,8 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { FormGroup, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { FormGroup, FormsModule } from '@angular/forms';
 import { FormularioComponent } from './formulario.component';
 import { ToastComponent } from './toast.component';
 
@@ -66,7 +66,7 @@ import { ToastComponent } from './toast.component';
             viewBox="0 -960 960 960"
           >
             <path
-              d="M324-168h312v-120q0-65-45-110t-111-46q-65 0-110 46t-46 110zm156-348q65 0 111-45t45-111v-120H324v120q0 65 46 111t110 45M192-96v-72h60v-120q0-59 28-109t78-83q-49-32-77-82t-29-110v-120h-60v-72h576v72h-60v120q0 59-28 110t-78 82q50 32 78 83t28 109v120h60v72zm288-696"
+              d="M480-80q-83 0-156-31t-127-86q-54-54-85-127T80-480q0-83 32-156t85-127q54-54 127-85t156-32q83 0 156 32t127 85q54 54 86 127t31 156q0 83-31 156t-86 127q-54 54-127 86T480-80m0-80q54 0 104-17t92-51L228-676q-33 42-50 92t-18 104q0 134 93 227t227 93m252-124q33-42 51-92t17-104q0-134-93-227t-227-93q-54 0-104 18t-92 50z"
             />
           </svg>
           <p class="text-sm font-medium mt-1">
@@ -194,7 +194,7 @@ export class TableComponent {
   );
 
   public deleteItem(id: number) {
-    if (confirm('¿Está seguro de eliminar este registro?')) {
+    if (confirm('¿Está seguro de eliminar este registro?'))
       this.service()
         .delete(id)
         .subscribe({
@@ -203,7 +203,6 @@ export class TableComponent {
             this.openDeleteToast.set(true);
           },
         });
-    }
   }
 
   public updateItem(item: SystemData) {

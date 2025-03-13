@@ -1,16 +1,17 @@
 import { ButtonComponent } from '@/components/button.component';
 import { FormularioComponent } from '@/components/formulario.component';
 import { TableComponent } from '@/components/table.component';
-import { Estudiante } from '@/interfaces/estudiante.interface';
+import { BACKEND_URL, headers } from '@/environments/environment';
+import type { Estudiante } from '@/interfaces/estudiante.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
 import { EstudiantesService } from '@/services/estudiantes.service';
+import { httpResource } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   signal,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -58,7 +59,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
       </div>
       <table-component
         title="estudiantes"
-        [data]="estudiantesResource.value() ?? []"
+        [data]="estudiantesResource.value()"
         [loading]="estudiantesResource.isLoading()"
         [form]="form()"
         [service]="estudiantesService"
@@ -82,12 +83,18 @@ export class EstudiantesAdminPage {
     }),
   ).asReadonly();
   public openForm = signal<boolean>(false);
-  public estudiantesResource = rxResource({
-    loader: () => this.estudiantesService.getAll(),
-  });
+  public estudiantesResource = httpResource<Estudiante[]>(
+    () => ({
+      url: `${BACKEND_URL}/estudiantes`,
+      headers,
+    }),
+    {
+      defaultValue: [],
+    },
+  );
 
   public onCreate(data: Estudiante) {
-    this.estudiantesResource.update(estudiantes => [...estudiantes!, data]);
+    this.estudiantesResource.update(estudiantes => estudiantes.concat(data));
   }
 
   public onDelete(id: number) {

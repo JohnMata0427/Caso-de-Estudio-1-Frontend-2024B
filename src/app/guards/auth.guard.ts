@@ -5,8 +5,7 @@ function isAuthenticated() {
   const token = localStorage.getItem('token');
   if (!token) return false;
 
-  const decodedToken = JSON.parse(atob(token.split('.')[1]));
-  return Date.now() < decodedToken.exp * 1000;
+  return Date.now() < JSON.parse(atob(token.split('.')[1])).exp * 1000;
 }
 
 export const AuthGuard: CanActivateFn = () => {

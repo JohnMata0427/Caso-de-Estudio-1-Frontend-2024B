@@ -1,16 +1,17 @@
 import { ButtonComponent } from '@/components/button.component';
 import { FormularioComponent } from '@/components/formulario.component';
 import { TableComponent } from '@/components/table.component';
+import { BACKEND_URL, headers } from '@/environments/environment';
 import { Matricula } from '@/interfaces/matricula.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
 import { MatriculasService } from '@/services/matriculas.service';
+import { httpResource } from '@angular/common/http';
 import {
   ChangeDetectionStrategy,
   Component,
   inject,
   signal,
 } from '@angular/core';
-import { rxResource } from '@angular/core/rxjs-interop';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
@@ -57,7 +58,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
       </div>
       <table-component
         title="matriculas"
-        [data]="matriculasResource.value() ?? []"
+        [data]="matriculasResource.value()"
         [loading]="matriculasResource.isLoading()"
         [service]="matriculasService"
         [form]="form()"
@@ -78,12 +79,18 @@ export class MatriculasAdminPage {
   ).asReadonly();
   public openForm = signal<boolean>(false);
   public loading = signal<boolean>(true);
-  public matriculasResource = rxResource({
-    loader: () => this.matriculasService.getAll(),
-  });
+  public matriculasResource = httpResource<Matricula[]>(
+    () => ({
+      url: `${BACKEND_URL}/matriculas`,
+      headers,
+    }),
+    {
+      defaultValue: [],
+    },
+  );
 
   public onCreate(data: Matricula) {
-    this.matriculasResource.update(matriculas => [...matriculas!, data]);
+    this.matriculasResource.update(matriculas => matriculas.concat(data));
   }
 
   public onDelete(id: number) {

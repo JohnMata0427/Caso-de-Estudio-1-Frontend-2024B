@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'auth-layout',
-  changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <main class="flex h-dvh items-center justify-center p-1.5">
       <img

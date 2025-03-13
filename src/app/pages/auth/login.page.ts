@@ -96,7 +96,7 @@ import {
             xmlns="http://www.w3.org/2000/svg"
             class="fill-indigo-500 absolute right-2 size-6 inset-y-0 h-full cursor-pointer"
             viewBox="0 -960 960 960"
-            (click)="togglePasswordVisibility()"
+            (click)="(togglePasswordVisibility())"
           >
             @if (showPassword()) {
               <path
@@ -151,11 +151,8 @@ export class LoginPage {
   private authService = inject(AuthService);
   public form = signal<FormGroup>(
     new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
-      password: new FormControl('', [
-        Validators.required,
-        Validators.minLength(8),
-      ]),
+      email: new FormControl('', [Validators.required]),
+      password: new FormControl('', [Validators.required]),
     }),
   ).asReadonly();
   public errorMessage = signal<string[]>([]);
@@ -167,19 +164,24 @@ export class LoginPage {
     this.showPassword.update(state => !state);
 
   public onSubmit(): void {
-    if (this.form().valid) {
-      this.loading.set(true);
+    if (this.form().invalid) {
+      this.errorMessage.set(['Todos los campos son requeridos']);
+      this.showToast.set(true);
+      return;
+    }
 
-      this.authService
-        .login(this.form().value)
-        .subscribe({
-          next: () => window.location.reload(),
-          error: ({ error }) => {
-            this.errorMessage.set([error?.response ?? 'Ha ocurrido un error inesperado']);
-            this.showToast.set(true);
-          },
-        })
-        .add(() => this.loading.set(false));
-    } else this.errorMessage.set(['Todos los campos son requeridos']);
+    this.loading.set(true);
+    this.authService
+      .login(this.form().value)
+      .subscribe({
+        next: () => window.location.reload(),
+        error: ({ error }) => {
+          const { response = 'Se ha producido un erro' } = error;
+          const { errors = [response] } = response;
+          this.errorMessage.set(errors);
+          this.showToast.set(true);
+        },
+      })
+      .add(() => this.loading.set(false));
   }
 }

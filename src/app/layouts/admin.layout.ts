@@ -5,7 +5,6 @@ import { NgClass, NgOptimizedImage, TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  computed,
   inject,
   signal,
 } from '@angular/core';
@@ -111,7 +110,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
                 d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480t33-163 89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17 42 17 17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33"
               />
             </svg>
-            <p class="text-xs font-medium mt-1">Cargando...</p>
+            <p class="text-xs font-medium mt-1">Cargando perfil...</p>
           } @else {
             <!-- Admin Icon -->
             <svg
@@ -123,12 +122,13 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
                 d="M480-408q60 0 102-42t42-102-42-102-102-42-102 42-42 102 42 102 102 42m0 237q58-18 104-57t80-91q-43-20-89-30t-95-11q-48 0-94 11t-90 30q34 51 80 91t104 57m0 71h-12q-6 0-11-3-131-43-210-159t-79-253v-180q0-23 13-41t33-26l240-92q13-5 26-5t26 5l240 92q21 8 34 26t12 41v180q0 137-79 253T503-103l-11 3z"
               />
             </svg>
+            @let user = userResource.value().usuario;
             <strong class="text-sm font-medium">
-              {{ userResource.value()?.usuario?.nombre }}
-              {{ userResource.value()?.usuario?.apellido }}
+              {{ user.nombre }}
+              {{ user.apellido }}
             </strong>
             <small class="text-[10px] text-stone-700 dark:text-stone-300">
-              {{ userResource.value()?.usuario?.email }}
+              {{ user.email }}
             </small>
             <p class="text-xs mt-1">
               <span class="text-emerald-500">•</span>
@@ -139,11 +139,12 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
         <h3 class="text-sm font-bold my-1">Dashboard</h3>
         <ul class="flex flex-col gap-y-1 text-sm">
           @for (route of routes(); track $index) {
-            @let condition = activedUrl() === route.path;
+            @let path = route.path;
+            @let condition = activedUrl() === path;
             <li>
               <a
                 class="flex gap-x-2 py-1 pl-2 pr-6 rounded-lg transition-colors duration-300 hover:bg-indigo-100 hover:text-indigo-500 group active:bg-indigo-200 font-medium items-center dark:hover:bg-indigo-950 dark:active:bg-indigo-900"
-                routerLink="/admin/{{ route.path }}"
+                routerLink="/admin/{{ path }}"
                 [ngClass]="{
                   'bg-indigo-100 text-indigo-500 dark:bg-indigo-950': condition,
                 }"
@@ -159,7 +160,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
                 >
                   <path [attr.d]="condition ? route.iconFilled : route.icon" />
                 </svg>
-                {{ route.path | titlecase }}
+                {{ path | titlecase }}
               </a>
             </li>
           }
@@ -178,21 +179,22 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
   `,
 })
 export class AdminLayout {
-  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly authService: AuthService = inject(AuthService);
+  private readonly activatedRoute: ActivatedRoute = inject(ActivatedRoute);
   private readonly title: Title = inject(Title);
   private readonly breakpointObserver: BreakpointObserver =
     inject(BreakpointObserver);
   public readonly routes = signal(NAVIGATION_ROUTES).asReadonly();
-  public readonly activedUrl = computed<string>(
-    () => this.activatedRoute.snapshot.url[0].path,
-  );
+  public readonly activedUrl = signal<string>(
+    this.activatedRoute.snapshot.url[0].path,
+  ).asReadonly();
   public readonly isDarkMode = signal<boolean>(
     localStorage.getItem('theme') === 'dark',
   );
   public readonly showNav = signal<boolean>(true);
   public readonly userResource = rxResource({
     loader: () => this.authService.profile(),
+    defaultValue: { response: '', usuario: {} },
   });
 
   constructor() {
@@ -210,7 +212,7 @@ export class AdminLayout {
 
   public logout(): void {
     localStorage.removeItem('token');
-    window.location.reload();
+    location.reload();
   }
 
   public toggleDarkMode(): void {

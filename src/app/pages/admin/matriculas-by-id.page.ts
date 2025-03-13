@@ -11,7 +11,6 @@ import {
   Component,
   computed,
   input,
-  linkedSignal,
 } from '@angular/core';
 
 interface ResponseMatriculaById {
@@ -51,9 +50,9 @@ interface ResponseMatriculaById {
           <p class="text-sm font-medium mt-1">Cargando información...</p>
         </div>
       } @else {
-        <article>
+        <article class="text-sm">
           @for (key of keys(); track $index) {
-            <p class="text-sm">
+            <p>
               <strong class="font-bold text-indigo-500">
                 {{ key.replace('_', ' ') | titlecase }}:
               </strong>
@@ -77,7 +76,7 @@ interface ResponseMatriculaById {
         <table-component
           title="estudiantes"
           [loading]="false"
-          [data]="estudiante()"
+          [data]="[matriculaResource.value().estudiante]"
           [editable]="false"
         />
         <aside class="flex gap-x-2 items-center font-medium text-sm">
@@ -96,7 +95,7 @@ interface ResponseMatriculaById {
         <table-component
           title="materias"
           [loading]="false"
-          [data]="materia()"
+          [data]="[matriculaResource.value().materia]"
           [editable]="false"
         />
       }
@@ -105,6 +104,7 @@ interface ResponseMatriculaById {
 })
 export class MatriculasByIdAdminPage {
   public readonly id = input.required<number>();
+
   public readonly matriculaResource = httpResource<ResponseMatriculaById>(
     () => ({
       url: `${BACKEND_URL}/matriculas/${this.id()}`,
@@ -113,15 +113,11 @@ export class MatriculasByIdAdminPage {
     { defaultValue: {} as ResponseMatriculaById },
   );
 
-  public readonly estudiante = linkedSignal(() => [
-    this.matriculaResource.value().estudiante,
-  ]);
-  public readonly materia = linkedSignal(() => [
-    this.matriculaResource.value().materia,
-  ]);
-
-  public readonly keys = computed<(keyof Matricula)[]>(() => {
-    const matricula = this.matriculaResource.value().matricula;
-    return Object.keys(matricula).slice(1, 3) as (keyof Matricula)[];
-  });
+  public readonly keys = computed<(keyof Matricula)[]>(
+    () =>
+      Object.keys(this.matriculaResource.value().matricula).slice(
+        1,
+        3,
+      ) as (keyof Matricula)[],
+  );
 }
