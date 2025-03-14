@@ -60,29 +60,31 @@ type FormAction = 'Registrar' | 'Actualizar';
             (click)="opened.set(false)"
           >
             Cancelar
+            <!-- Close Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="fill-stone-100 size-5"
-              viewBox="0 -960 960 960"
+              viewBox="0 0 24 24"
             >
               <path
-                d="m291-208-83-83 189-189-189-189 83-83 189 189 189-189 83 83-189 189 189 189-83 83-189-189z"
+                d="M6.4 19 5 17.6l5.6-5.6L5 6.4 6.4 5l5.6 5.6L17.6 5 19 6.4 13.4 12l5.6 5.6-1.4 1.4-5.6-5.6z"
               />
             </svg>
           </button>
           <button-component
-            moreStyles="py-1 px-2 text-sm flex gap-x-1"
+            moreStyles="py-1 px-2 text-sm flex gap-x-2"
             [disabled]="loading()"
             (click)="onSubmit()"
           >
             {{ action() }}
+            <!-- Send Icon -->
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 -960 960 960"
               class="fill-stone-100 size-5"
+              viewBox="0 0 24 24"
             >
               <path
-                d="M193-212q-18 7-33-3t-16-30v-139l288-96-288-96v-139q0-19 16-29t33-4l587 235q23 9 23 33t-23 33z"
+                d="M21 7v12q0 .8-.6 1.4T19 21H5q-.8 0-1.4-.6T3 19V5q0-.8.6-1.4T5 3h12zm-9 11q1.3 0 2.1-.9T15 15t-.9-2.1T12 12t-2.1.9T9 15t.9 2.1 2.1.9m-6-8h9V6H6z"
               />
             </svg>
           </button-component>

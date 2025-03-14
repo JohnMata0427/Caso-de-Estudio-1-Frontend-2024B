@@ -1,7 +1,7 @@
 import { NAVIGATION_ROUTES } from '@/constants/navigation.constant';
 import { AuthService } from '@/services/auth.service';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
-import { NgClass, NgOptimizedImage, TitleCasePipe } from '@angular/common';
+import { TitleCasePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -14,7 +14,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
 
 @Component({
   selector: 'admin-layout',
-  imports: [RouterLink, NgClass, NgOptimizedImage, TitleCasePipe],
+  imports: [RouterLink, TitleCasePipe],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <header
@@ -29,19 +29,15 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-5 fill-stone-800 dark:fill-stone-100"
-            viewBox="0 -960 960 960"
+            viewBox="0 0 24 24"
           >
-            <path
-              d="m144-264v-72h672v72zm0-180v-72h672v72zm0-180v-72h672v72z"
-            />
+            <path d="M3 18v-2h18v2zm0-5v-2h18v2zm0-5V6h18v2z" />
           </svg>
         </button>
         <img
-          ngSrc="icono.webp"
+          src="icono.webp"
           alt="Icono de la aplicación"
-          class="object-contain"
-          width="24"
-          height="24"
+          class="object-contain size-6"
         />
         <h1 class="font-semibold text-xs sm:block">
           Sistema de Gestión de Matriculas
@@ -56,15 +52,15 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-5 fill-stone-800 dark:fill-stone-100"
-            viewBox="0 -960 960 960"
+            viewBox="0 0 24 24"
           >
             @if (isDarkMode()) {
               <path
-                d="M480-360q50 0 85-35t35-85-35-85-85-35-85 35-35 85 35 85 85 35m0 72q-80 0-136-56t-56-136 56-136 136-56 136 56 56 136-56 136-136 56M216-444H48v-72h168zm696 0H744v-72h168zM444-744v-168h72v168zm0 696v-168h72v168zM269-642 166-742l51-55 102 104zm474 475L642-268l49-51 103 101zM640-691l102-101 51 49-100 103zM163-217l105-99 49 47-98 104zm317-263"
+                d="M12 15q1.3 0 2.1-.9T15 12t-.9-2.1T12 9t-2.1.9T9 12t.9 2.1 2.1.9m0 2q-2 0-3.5-1.5T7 12t1.5-3.5T12 7t3.5 1.5T17 12t-1.5 3.5T12 17m-7-4H1v-2h4zm18 0h-4v-2h4zM11 5V1h2v4zm0 18v-4h2v4zM6.4 7.7 3.9 5.3 5.3 4l2.4 2.5zm12.3 12.4-2.4-2.5 1.3-1.4 2.5 2.5zM16.3 6.4l2.4-2.5L20 5.3l-2.5 2.4zM3.8 18.7l2.6-2.4 1.3 1.3-2.4 2.5zM12 12"
               />
             } @else {
               <path
-                d="M480-144q-140 0-238-98t-98-238 98-238 238-98l25 1 26 3q-39 29-62 72t-23 92q0 85 59 144t143 58q49 0 92-23t72-62l3 26 1 25q0 140-98 238t-238 98m0-72q82 0 149-47t98-123l-40 9q-19 3-39 3-114 0-194-80t-80-194q0-20 4-39l8-40q-76 31-123 98t-47 149q0 110 77 187t187 77m-14-250"
+                d="M12 21q-3.8 0-6.4-2.6T3 12t2.6-6.4T12 3h.7l.7.1q-1 .7-1.7 1.9t-.6 2.5q0 2.3 1.6 3.8t3.8 1.6q1.4 0 2.5-.6t1.9-1.7v.7l.1.7q0 3.8-2.6 6.4T12 21m0-2q2.2 0 4-1.2t2.5-3.2l-1 .2-1 .1q-3 0-5.2-2.2T9 7.5v-1q0-.5.3-1-2 .8-3.2 2.5T5 12q0 2.9 2 5t5 2m-.3-6.8"
               />
             }
           </svg>
@@ -78,10 +74,10 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="size-5 fill-stone-100"
-            viewBox="0 -960 960 960"
+            viewBox="0 0 24 24"
           >
             <path
-              d="M216-144q-30 0-51-21t-21-51v-528q0-30 21-51t51-21h264v72H216v528h264v72zm432-168-51-51 81-81H384v-72h294l-81-81 51-51 168 168z"
+              d="m17 7-1.4 1.4 2.6 2.6H8v2h10.2l-2.6 2.6L17 17l5-5M4 5h8V3H4a2 2 0 0 0-2 2v14c0 1.1.9 2 2 2h8v-2H4z"
             />
           </svg>
         </button>
@@ -90,10 +86,11 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
     <main class="flex flex-1">
       <nav
         class="px-6 py-4 border-r border-stone-300 dark:border-stone-800 lg:static bg-stone-100 dark:bg-stone-900 flex flex-col z-10 fixed"
-        [ngClass]="{
-          'animate-slide-out-left': !showNav(),
-          'animate-slide-in-right lg:animate-none': showNav(),
-        }"
+        [class]="
+          showNav()
+            ? 'animate-slide-in-right lg:animate-none'
+            : 'animate-slide-out-left'
+        "
       >
         <h3 class="text-sm font-bold">Bienvenido</h3>
         <article
@@ -104,10 +101,10 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="fill-indigo-500 size-5 animate-spin opacity-90"
-              viewBox="0 -960 960 960"
+              viewBox="0 0 24 24"
             >
               <path
-                d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480t33-163 89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17 42 17 17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33"
+                d="M12 2a10 10 0 0 0 0 20v-3a7 7 0 1 1 7-7h3c0-5-5-10-10-10"
               />
             </svg>
             <p class="text-xs font-medium mt-1">Cargando perfil...</p>
@@ -116,10 +113,10 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
             <svg
               xmlns="http://www.w3.org/2000/svg"
               class="size-8 mx-auto fill-stone-800 dark:fill-stone-100"
-              viewBox="0 -960 960 960"
+              viewBox="0 0 24 24"
             >
               <path
-                d="M480-408q60 0 102-42t42-102-42-102-102-42-102 42-42 102 42 102 102 42m0 237q58-18 104-57t80-91q-43-20-89-30t-95-11q-48 0-94 11t-90 30q34 51 80 91t104 57m0 71h-12q-6 0-11-3-131-43-210-159t-79-253v-180q0-23 13-41t33-26l240-92q13-5 26-5t26 5l240 92q21 8 34 26t12 41v180q0 137-79 253T503-103l-11 3z"
+                d="M12 1 3 5v6c0 6 4 11 9 12 5-1 9-6 9-12V5Zm0 4a3 3 0 1 1-3 3 3 3 0 0 1 3-3m0 8c2 0 6 1 6 3a7 7 0 0 1-12 0c0-2 4-3 6-3"
               />
             </svg>
             @let user = userResource.value().usuario;
@@ -145,18 +142,22 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
               <a
                 class="flex gap-x-2 py-1 pl-2 pr-6 rounded-lg transition-colors duration-300 hover:bg-indigo-100 hover:text-indigo-500 group active:bg-indigo-200 font-medium items-center dark:hover:bg-indigo-950 dark:active:bg-indigo-900"
                 routerLink="/admin/{{ path }}"
-                [ngClass]="{
-                  'bg-indigo-100 text-indigo-500 dark:bg-indigo-950': condition,
-                }"
+                [class]="
+                  condition
+                    ? 'bg-indigo-100 text-indigo-500 dark:bg-indigo-950'
+                    : ''
+                "
               >
+                <!-- Student, Book, and Inscription Icons -->
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   class="size-5 group-hover:fill-indigo-500 transition-colors duration-300"
-                  viewBox="0 -960 960 960"
-                  [ngClass]="{
-                    'fill-indigo-500': condition,
-                    'fill-stone-800 dark:fill-stone-100': !condition,
-                  }"
+                  viewBox="0 0 24 24"
+                  [class]="
+                    condition
+                      ? 'fill-indigo-500'
+                      : 'fill-stone-800 dark:fill-stone-100'
+                  "
                 >
                   <path [attr.d]="condition ? route.iconFilled : route.icon" />
                 </svg>
@@ -172,7 +173,17 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
           alt="Fondo de la aplicación"
           class="object-cover h-20 sm:h-40 w-full rounded-lg object-left"
         />
-
+        <aside class="flex gap-x-2 items-center font-medium text-sm">
+          <!-- Dashboard Icon -->
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="size-6 fill-stone-800 dark:fill-stone-100"
+            viewBox="0 0 24 24"
+          >
+            <path d="M13 3v6h8V3m-8 18h8V11h-8M3 21h8v-6H3m0-2h8V3H3z" />
+          </svg>
+          <h2>Dashboard de {{ activedUrl() | titlecase }}</h2>
+        </aside>
         <ng-content />
       </section>
     </main>

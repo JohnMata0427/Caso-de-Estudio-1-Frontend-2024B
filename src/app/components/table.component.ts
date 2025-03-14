@@ -13,8 +13,8 @@ import {
   output,
   signal,
 } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormGroup, FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { FormularioComponent } from './formulario.component';
 import { ToastComponent } from './toast.component';
 
@@ -25,55 +25,40 @@ import { ToastComponent } from './toast.component';
   template: `
     @if (loading()) {
       <div class="flex gap-x-2 justify-center items-center">
+        <!-- Spinner Icon -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
           class="fill-indigo-500 size-5 animate-spin opacity-90"
-          viewBox="0 -960 960 960"
+          viewBox="0 0 24 24"
         >
-          <path
-            d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480t33-163 89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17 42 17 17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33"
-          />
+          <path d="M12 2a10 10 0 0 0 0 20v-3a7 7 0 1 1 7-7h3c0-5-5-10-10-10" />
         </svg>
         <p class="text-sm font-medium mt-1">Cargando información...</p>
       </div>
     } @else {
       @if (editable()) {
         <label class="relative" for="search">
+          <!-- Search Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 -960 960 960"
-            class="fill-stone-800 dark:fill-stone-100 absolute left-2 size-4 bottom-0"
+            class="fill-stone-800 dark:fill-stone-100 absolute left-2 size-5 top-0.5"
+            viewBox="0 0 24 24"
           >
             <path
-              d="M765-144 526-383q-30 22-66 35-36 12-76 12-100 0-170-70t-70-170 70-170 170-70 170 70 70 170q0 40-12 76-13 36-35 66l239 239zM384-408q70 0 119-49t49-119-49-119-119-49-119 49-49 119 49 119 119 49"
+              d="M18.32 14.43A8 8 0 0 0 6.34 3.87a8 8 0 0 0 10.57 11.97l.04.05 4.24 4.24a1 1 0 1 0 1.42-1.41l-4.25-4.24zm-2.08-9.15a6 6 0 1 1-8.48 8.49 6 6 0 0 1 8.48-8.49"
             />
           </svg>
           <input
             type="search"
             id="search"
             name="search"
-            class="w-full pl-8 py-2 pr-2 rounded-lg outline-indigo-500 focus:outline-3 text-xs bg-stone-200 border border-stone-300 placeholder:text-stone-500 dark:bg-stone-800 dark:border-stone-700 dark:caret-stone-100 mb-4"
+            class="w-full pl-9 py-2 pr-2 rounded-lg outline-indigo-500 focus:outline-3 text-xs bg-stone-200 border border-stone-300 placeholder:text-stone-500 dark:bg-stone-800 dark:border-stone-700 dark:caret-stone-100 mb-4"
             placeholder="Buscar registros..."
             [(ngModel)]="search"
           />
         </label>
       }
-      @if (filteredData().length === 0) {
-        <div class="flex gap-x-2 justify-center items-center mt-4">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            class="fill-stone-800 dark:fill-stone-100 size-5"
-            viewBox="0 -960 960 960"
-          >
-            <path
-              d="M480-80q-83 0-156-31t-127-86q-54-54-85-127T80-480q0-83 32-156t85-127q54-54 127-85t156-32q83 0 156 32t127 85q54 54 86 127t31 156q0 83-31 156t-86 127q-54 54-127 86T480-80m0-80q54 0 104-17t92-51L228-676q-33 42-50 92t-18 104q0 134 93 227t227 93m252-124q33-42 51-92t17-104q0-134-93-227t-227-93q-54 0-104 18t-92 50z"
-            />
-          </svg>
-          <p class="text-sm font-medium mt-1">
-            No hay información para mostrar
-          </p>
-        </div>
-      } @else {
+      @if (filteredData().length) {
         <div class="overflow-x-auto w-full">
           <table
             class="border-y border-stone-300 dark:border-stone-700 text-sm w-full"
@@ -109,10 +94,10 @@ import { ToastComponent } from './toast.component';
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         class="fill-stone-800 dark:fill-stone-100 size-5 cursor-pointer"
-                        viewBox="0 -960 960 960"
+                        viewBox="0 0 24 24"
                       >
                         <path
-                          d="M444-288h72v-240h-72zm36-312q15 0 26-10t10-26q0-15-10-25t-26-11q-15 0-26 10t-10 26q0 15 10 25t26 11m0 504q-79 0-149-30t-122-82q-53-53-83-123T96-480q0-80 30-149 30-70 83-122t122-83q70-30 149-30t149 30 123 83 82 122q30 69 30 149 0 79-30 149t-82 123q-53 52-123 82-69 30-149 30m0-72q130 0 221-91t91-221-91-221-221-91-221 91-91 221 91 221 221 91m0-312"
+                          d="M11 17h2v-6h-2zm1-8q.42 0 .71-.29T13 8t-.29-.71T12 7t-.71.29T11 8t.29.71T12 9m0 13q-2.08 0-3.9-.79t-3.17-2.14-2.14-3.17T2 12t.79-3.9 2.14-3.17T8.1 2.78 12 2t3.9.79 3.17 2.14 2.14 3.17T22 12t-.79 3.9-2.14 3.17-3.17 2.14T12 22m0-2q3.35 0 5.67-2.33T20 12t-2.33-5.67T12 4 6.33 6.33 4 12t2.33 5.67T12 20m0-8"
                         />
                       </svg>
                     </button>
@@ -122,10 +107,10 @@ import { ToastComponent } from './toast.component';
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           class="fill-indigo-500 dark:fill-indigo-400 size-5 cursor-pointer"
-                          viewBox="0 -960 960 960"
+                          viewBox="0 0 24 24"
                         >
                           <path
-                            d="M216-216h51l375-375-51-51-375 375zm-72 72v-153l498-498q11-11 24-16t27-5 27 5 24 16l51 51q11 11 16 24t5 27-5 27-16 24L297-144zm600-549-51-51zm-128 77-25-26 51 51z"
+                            d="M5 19h1.43l9.77-9.78-1.42-1.42L5 17.57zm-2 2v-4.25L16.2 3.57q.3-.27.66-.42t.77-.15.77.15.65.45L20.43 5q.3.28.43.65t.14.75q0 .4-.14.76t-.43.67L7.25 21zM19 6.4 17.6 5zm-3.52 2.13-.7-.73 1.42 1.42z"
                           />
                         </svg>
                       </button>
@@ -134,10 +119,10 @@ import { ToastComponent } from './toast.component';
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
                           class="fill-red-500 dark:fill-red-400 size-5 cursor-pointer"
-                          viewBox="0 -960 960 960"
+                          viewBox="0 0 24 24"
                         >
                           <path
-                            d="M312-144q-30 0-51-21t-21-51v-480h-48v-72h192v-48h192v48h192v72h-48v480q0 30-21 51t-51 21zm336-552H312v480h336zM384-288h72v-336h-72zm120 0h72v-336h-72zM312-696v480z"
+                            d="M7 21q-.82 0-1.41-.59T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .82-.59 1.41T17 21zM17 6H7v13h10zM9 17h2V8H9zm4 0h2V8h-2zM7 6v13z"
                           />
                         </svg>
                       </button>
@@ -164,6 +149,21 @@ import { ToastComponent } from './toast.component';
             [(opened)]="openDeleteToast"
           />
         }
+      } @else {
+        <div class="flex gap-x-2 justify-center items-center mt-4">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="fill-stone-800 dark:fill-stone-100 size-5"
+            viewBox="0 0 24 24"
+          >
+            <path
+              d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20M4 12a8 8 0 0 1 1.7-4.9l11.2 11.2A8 8 0 0 1 12 20a8 8 0 0 1-8-8m14.3 4.9L7.1 5.7A8 8 0 0 1 12 4a8 8 0 0 1 8 8 8 8 0 0 1-1.7 4.9"
+            />
+          </svg>
+          <p class="text-sm font-medium mt-1">
+            No hay información para mostrar
+          </p>
+        </div>
       }
     }
   `,

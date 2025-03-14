@@ -1,7 +1,7 @@
-import type { Estudiante } from '@/interfaces/estudiante.interface';
-import type { Matricula } from '@/interfaces/matricula.interface';
 import { TableComponent } from '@/components/table.component';
 import { BACKEND_URL, headers } from '@/environments/environment';
+import type { Estudiante } from '@/interfaces/estudiante.interface';
+import type { Matricula } from '@/interfaces/matricula.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
 import { TitleCasePipe } from '@angular/common';
 import { httpResource } from '@angular/common/http';
@@ -24,25 +24,26 @@ interface ResponseEstudianteById {
   template: `
     <admin-layout class="flex flex-col min-h-dvh">
       <aside class="flex gap-x-2 items-center font-medium text-sm">
-        <!-- Dashboard Icon -->
+        <!-- Ray Icon -->
         <svg
           xmlns="http://www.w3.org/2000/svg"
-          class="size-7 fill-stone-800 dark:fill-stone-100"
-          viewBox="0 -960 960 960"
+          class="size-6 fill-stone-800 dark:fill-stone-100"
+          viewBox="0 0 24 24"
         >
-          <path d="m336-96 48-264H192l324-504h72l-36 312h216L408-96z" />
+          <path d="M11 15H6l7-14v8h5l-7 14z" />
         </svg>
         <h2 class="font-bold">Detalles del Estudiante con ID {{ id() }}</h2>
       </aside>
       @if (estudianteResource.isLoading()) {
         <div class="flex gap-x-2 justify-center items-center">
+          <!-- Spinner Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
             class="fill-indigo-500 size-5 animate-spin opacity-90"
-            viewBox="0 -960 960 960"
+            viewBox="0 0 24 24"
           >
             <path
-              d="M480-62q-87 0-163-33t-133-89q-56-57-89-133T62-480t33-163 89-133q57-57 133-89 76-33 163-33 25 0 42 17t17 42q0 24-17 42t-42 17q-125 0-212 87-88 87-88 212t88 214q87 87 212 87 126 0 213-88 87-87 87-212 0-25 17-42t42-17 42 17 17 42q0 87-33 163t-89 133q-57 57-133 89-76 33-163 33"
+              d="M12 2a10 10 0 0 0 0 20v-3a7 7 0 1 1 7-7h3c0-5-5-10-10-10"
             />
           </svg>
           <p class="text-sm font-medium mt-1">Cargando información...</p>
@@ -56,17 +57,19 @@ interface ResponseEstudianteById {
               </strong>
               <span>{{ estudianteResource.value().estudiante[key] }}</span>
             </p>
+          } @empty {
+            <p class="text-red-500">No se encontraron datos del estudiante</p>
           }
         </article>
         <aside class="flex gap-x-2 items-center font-medium text-sm">
-          <!-- Dashboard Icon -->
+          <!-- Rocket Icon -->
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            class="size-7 fill-stone-800 dark:fill-stone-100"
-            viewBox="0 -960 960 960"
+            class="size-6 fill-stone-800 dark:fill-stone-100"
+            viewBox="0 0 24 24"
           >
             <path
-              d="m108-517 170-171q12-12 28-17t32-3l71 9q-45 54-82 112t-62 122l-157-52Zm203 67q25-72 67-134t97-114q75-72 168-115t194-27q17 101-27 193T696-480q-52 56-114 99t-135 68L311-450Zm238-101q21 21 51 21t51-21q21-21 21-51t-21-51q-21-21-51-21t-51 21q-21 21-21 51t21 51Zm-34 441-52-157q65-26 123-62t111-82l21 46q5 24-5 46t-28 39L515-110ZM176-331q32-32 78-32t78 31q32 32 30 77t-34 77q-44 47-106 60T96-98q8-63 22-125t58-108Z"
+              d="m2.5 10.6 4.2-4.2q.3-.4.8-.5t1 0l1.3.2Q8.4 7.7 7.6 9t-1.5 3.1zm5 2.2q.7-1.8 1.6-3.4t2.4-3q2.2-2.2 5-3.2t5.3-.7q.5 2.4-.6 5.3t-3.3 5q-1.4 1.4-3 2.4t-3.4 1.6zm7-3q.6.6 1.4.6t1.4-.6.6-1.4-.6-1.4-1.4-.6-1.4.6-.6 1.4.6 1.4m-.7 12-1.6-3.6q1.8-.7 3.1-1.5t3-2.1l.2 1.3v1q-.1.5-.5.8zM4 16q1-.8 2.2-.8t2.1.8.9 2.2-.9 2q-.6.7-2 1.2t-4.1.8q.3-2.6.8-4T4 16"
             />
           </svg>
           <h2 class="font-bold">Matriculas del Estudiante:</h2>

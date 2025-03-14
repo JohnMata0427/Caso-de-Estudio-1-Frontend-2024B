@@ -9,11 +9,6 @@ interface Usuario {
   email?: string;
 }
 
-interface ProfileResponse {
-  response: string;
-  usuario: Usuario;
-}
-
 interface LoginRequest {
   email: string;
   password: string;
@@ -22,6 +17,11 @@ interface LoginRequest {
 interface LoginResponse {
   response: string;
   token: string;
+}
+
+interface ProfileResponse {
+  response: string;
+  usuario: Usuario;
 }
 
 @Injectable({

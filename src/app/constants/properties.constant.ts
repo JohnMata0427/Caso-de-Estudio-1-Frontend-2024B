@@ -8,7 +8,7 @@ export type SystemTitle = 'estudiantes' | 'materias' | 'matriculas';
 interface InputNames {
   [key: string]: {
     type: string;
-    placeholder?: string;
+    placeholder: string;
   };
 }
 
@@ -39,7 +39,7 @@ export const INPUT_NAMES: Record<SystemTitle, InputNames> = {
     nombre: { type: 'text', placeholder: 'Juan' },
     apellido: { type: 'text', placeholder: 'Perez' },
     cedula: { type: 'number', placeholder: '123456789' },
-    fecha_nacimiento: { type: 'date' },
+    fecha_nacimiento: { type: 'date', placeholder: '2000-01-01' },
     ciudad: { type: 'text', placeholder: 'Quito' },
     direccion: { type: 'text', placeholder: 'Sur de Quito, Calle 123' },
     telefono: { type: 'number', placeholder: '0987654321' },
