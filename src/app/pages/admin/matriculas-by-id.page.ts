@@ -105,7 +105,7 @@ interface ResponseMatriculaById {
     </admin-layout>
   `,
 })
-export class MatriculasByIdAdminPage {
+export default class MatriculasByIdAdminPage {
   public readonly id = input.required<number>();
 
   public readonly matriculaResource = httpResource<ResponseMatriculaById>(

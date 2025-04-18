@@ -82,7 +82,7 @@ interface ResponseMateriaById {
     </admin-layout>
   `,
 })
-export class MateriasByIdAdminPage {
+export default class MateriasByIdAdminPage {
   public readonly id = input.required<number>();
   
   public readonly materiaResource = httpResource<ResponseMateriaById>(

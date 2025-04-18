@@ -129,6 +129,16 @@ import {
             </svg>
           }
         </button-component>
+        <span class="text-sm text-center">
+          ¿Desea probar la aplicación?
+          <a
+            class="text-indigo-500 hover:text-indigo-600 active:text-indigo-700 hover:underline active:underline transition-all duration-300"
+            href="/"
+            (click)="guestLogin()"
+          >
+            Inicia sesión como invitado
+          </a>
+        </span>
       </form>
     </auth-layout>
     <toast-component
@@ -138,7 +148,7 @@ import {
     />
   `,
 })
-export class LoginPage {
+export default class LoginPage {
   private authService = inject(AuthService);
   public form = signal<FormGroup>(
     new FormGroup({
@@ -175,5 +185,9 @@ export class LoginPage {
         },
       })
       .add(() => this.loading.set(false));
+  }
+
+  public guestLogin(): void {
+    localStorage.setItem('guest', 'true');
   }
 }

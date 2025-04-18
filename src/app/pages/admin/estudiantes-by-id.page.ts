@@ -84,7 +84,7 @@ interface ResponseEstudianteById {
     </admin-layout>
   `,
 })
-export class EstudiantesByIdAdminPage {
+export default class EstudiantesByIdAdminPage {
   public readonly id = input.required<number>();
 
   public readonly estudianteResource = httpResource<ResponseEstudianteById>(

@@ -3,4 +3,7 @@ export const BACKEND_URL =
 
 export const headers = {
   Authorization: `Bearer ${localStorage.getItem('token')}`,
+  'Content-Type': 'application/json',
 };
+
+export const IS_GUEST = localStorage.getItem('guest') !== null;

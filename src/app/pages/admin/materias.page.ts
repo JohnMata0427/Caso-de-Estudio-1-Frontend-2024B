@@ -55,7 +55,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
     </admin-layout>
   `,
 })
-export class MateriasAdminPage {
+export default class MateriasAdminPage {
   protected materiasService: MateriasService = inject(MateriasService);
   public form = signal<FormGroup>(
     new FormGroup({

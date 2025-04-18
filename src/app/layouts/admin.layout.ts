@@ -145,7 +145,7 @@ import { ActivatedRoute, RouterLink } from '@angular/router';
                 [class]="
                   condition
                     ? 'bg-indigo-100 text-indigo-500 dark:bg-indigo-950'
-                    : ''
+                    : undefined
                 "
               >
                 <!-- Student, Book, and Inscription Icons -->
@@ -223,6 +223,7 @@ export class AdminLayout {
 
   public logout(): void {
     localStorage.removeItem('token');
+    localStorage.removeItem('guest');
     location.reload();
   }
 

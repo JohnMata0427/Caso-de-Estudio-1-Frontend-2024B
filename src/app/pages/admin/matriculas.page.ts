@@ -1,7 +1,7 @@
 import { ButtonComponent } from '@/components/button.component';
 import { FormularioComponent } from '@/components/formulario.component';
 import { TableComponent } from '@/components/table.component';
-import { BACKEND_URL, headers } from '@/environments/environment';
+import { BACKEND_URL, IS_GUEST, headers } from '@/environments/environment';
 import { Matricula } from '@/interfaces/matricula.interface';
 import { AdminLayout } from '@/layouts/admin.layout';
 import { MatriculasService } from '@/services/matriculas.service';
@@ -54,7 +54,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
     </admin-layout>
   `,
 })
-export class MatriculasAdminPage {
+export default class MatriculasAdminPage {
   protected matriculasService: MatriculasService = inject(MatriculasService);
   public form = signal<FormGroup>(
     new FormGroup({

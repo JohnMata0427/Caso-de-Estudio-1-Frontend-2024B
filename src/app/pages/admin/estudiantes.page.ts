@@ -55,7 +55,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
     </admin-layout>
   `,
 })
-export class EstudiantesAdminPage {
+export default class EstudiantesAdminPage {
   protected estudiantesService: EstudiantesService = inject(EstudiantesService);
   public form = signal<FormGroup>(
     new FormGroup({

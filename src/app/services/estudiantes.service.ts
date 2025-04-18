@@ -1,5 +1,5 @@
-import type { Estudiante } from '@/interfaces/estudiante.interface';
 import { BACKEND_URL, headers } from '@/environments/environment';
+import type { Estudiante } from '@/interfaces/estudiante.interface';
 import { HttpClient } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 
